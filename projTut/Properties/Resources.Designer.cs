@@ -70,7 +70,7 @@ namespace projTut.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à &lt;-.
+        ///   Recherche une chaîne localisée semblable à &lt;_.
         /// </summary>
         internal static string ppv {
             get {

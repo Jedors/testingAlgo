@@ -122,7 +122,7 @@
     <comment>temporaire</comment>
   </data>
   <data name="ppv" xml:space="preserve">
-    <value>&lt;-</value>
+    <value>&lt;_</value>
     <comment>passage par valeur</comment>
   </data>
 </root>
