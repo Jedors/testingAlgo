@@ -52,6 +52,16 @@ namespace projTut
             contentKnown = false;
         }
 
+        public Variable (Variable var)
+        {
+            nom = var.nom;
+            type = new Type(var.type);
+            contentKnown = var.contentKnown;
+            contentBool = var.contentBool;
+            contentInt = var.contentInt;
+            contentFloat = var.contentFloat;
+        }
+
         public string getNom()
         {
             return nom;
