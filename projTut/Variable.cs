@@ -18,6 +18,7 @@ namespace projTut
         public Variable (string nom)
         {
             this.nom = nom;
+            contentKnown = false;
             type = new Type();
         }
 
@@ -78,6 +79,32 @@ namespace projTut
             {
                 if (getType().type == Type.types.ENTIER)
                     return contentInt;
+                else
+                    throw new Exception("Erreur de type");
+            }
+            else
+                throw new Exception("Valeur non connu");
+        }
+
+        public bool getBool()
+        {
+            if (isKnown())
+            {
+                if (getType().type == Type.types.BOOLEAN)
+                    return contentBool;
+                else
+                    throw new Exception("Erreur de type");
+            }
+            else
+                throw new Exception("Valeur non connu");
+        }
+
+        public float getFloat()
+        {
+            if (isKnown())
+            {
+                if (getType().type == Type.types.REEL)
+                    return contentFloat;
                 else
                     throw new Exception("Erreur de type");
             }
