@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace projTut
 {
-    class Fonction
+    class Fonction : Procedure
     {
+        private Variable retour;
     }
 }

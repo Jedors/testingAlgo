@@ -46,7 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fonction.cs" />
+    <Compile Include="Instruction.cs" />
+    <Compile Include="Parametre.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="Procedure.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

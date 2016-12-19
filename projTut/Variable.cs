@@ -10,31 +10,69 @@ namespace projTut
     {
         private string nom;
         private Type type;
-        private dynamic contenu;
+        private bool contentKnown;
+        private bool contentBool;
+        private int contentInt;
+        private float contentFloat;
 
         public Variable (string nom)
         {
             this.nom = nom;
-
-            contenu = null;
             type = new Type();
         }
 
-        public Variable (string nom, Type type) : this(nom)
+        public Variable (string nom, bool contentBool)
         {
-            this.type = new Type(type);
-
-            contenu = null;
+            this.nom = nom;
+            type = new Type(Type.types.BOOLEAN);
+            contentKnown = true;
+            this.contentBool = contentBool;
         }
 
-        public Variable (string nom, Type type, dynamic contenu) : this(nom,type)
+        public Variable (string nom, int contentInt)
         {
-            this.contenu = contenu;
+            this.nom = nom;
+            type = new Type(Type.types.ENTIER);
+            contentKnown = true;
+            this.contentInt = contentInt;
+        }
+
+        public Variable (string nom, float contentFloat)
+        {
+            this.nom = nom;
+            type = new Type(Type.types.REEL);
+            contentKnown = true;
+            this.contentFloat = contentFloat;
+        }
+
+        public Variable (string nom, Type type)
+        {
+            this.nom = nom;
+            this.type = new Type(type);
+            contentKnown = false;
         }
 
         public string getNom()
         {
             return nom;
+        }
+
+        public bool isKnown()
+        {
+            return contentKnown;
+        }
+
+        public int getInt()
+        {
+            if (isKnown())
+            {
+                if (getType().type == Type.types.ENTIER)
+                    return contentInt;
+                else
+                    throw new Exception("Erreur de type");
+            }
+            else
+                throw new Exception("Valeur non connu");
         }
 
         public Type getType()
