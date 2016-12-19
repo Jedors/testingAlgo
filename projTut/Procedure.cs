@@ -8,5 +8,7 @@ namespace projTut
 {
     class Procedure
     {
+        private Parametre[] listeParametre;
+        private Instruction[] listeInstruction;
     }
 }

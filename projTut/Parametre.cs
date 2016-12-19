@@ -8,5 +8,14 @@ namespace projTut
 {
     class Parametre
     {
+        public enum PassagePar
+        {
+            ADRESSE,
+            VALEUR,
+            UNKNOWN
+        }
+
+        private PassagePar passagePar;
+        private Type type;
     }
 }
