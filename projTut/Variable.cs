@@ -14,12 +14,17 @@ namespace projTut
 
         public Variable (string nom)
         {
+            this.nom = nom;
+
+            contenu = null;
             type = new Type();
         }
 
         public Variable (string nom, Type type) : this(nom)
         {
             this.type = new Type(type);
+
+            contenu = null;
         }
 
         public Variable (string nom, Type type, dynamic contenu) : this(nom,type)

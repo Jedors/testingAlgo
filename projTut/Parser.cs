@@ -52,7 +52,27 @@ namespace projTut
                 for (int i = 0; i < line.Length; i++)
                 {
                     char c = line[i];
-                    if (c == '(') nb_par_open++;
+                    if (c == '(')
+                    {
+                        if (i == line.Length - 1)
+                        {
+                            PrintError(Array.IndexOf(pseudocode, line), "'(' en fin de ligne");
+                            return false;
+                        }
+                        nb_par_open++;
+                        char prec = line[i - 1], suiv = line[i + 1];
+                        if (((prec < 'a')||(prec > 'z')) && (prec != '-') && (prec != '+') && (prec != '*') && (prec != '/') && (prec != '=')
+                            && (prec != '>') && (prec != '<'))
+                        {
+                            PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit avant un '('");
+                            return false;
+                        }
+                        if ((suiv < 'a') && (suiv > 'z') && (suiv < '0') && (suiv > '9') && (suiv != '-') && (suiv != '('))
+                        {
+                            PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit après un '('");
+                            return false;
+                        }
+                    }
                     if (c == ')')
                     {
                         nb_par_open--;
@@ -64,12 +84,11 @@ namespace projTut
                         if (i != line.Length - 1)
                         {
                             char suiv = line[i + 1];
-                            if (suiv != '*' && suiv != '/' && suiv != '-' && suiv != '+' && suiv != ')'
-                                && suiv != ',' && suiv != '<' && suiv != '>' && suiv != '=')
+                            if ((suiv != '*') && (suiv != '/') && (suiv != '-') && (suiv != '+') && (suiv != ')')
+                                && (suiv != ',') && (suiv != '<') && (suiv != '>') && (suiv != '=') && (suiv != '%'))
                             {
                                 if (!line.Substring(i+1).Contains("donne") || line.Substring(i+1).IndexOf("donne") != 0)
                                 {
-                                    Console.WriteLine(line.Substring(i+1));
                                     PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit après un ')'");
                                     return false;
                                 }
@@ -94,6 +113,30 @@ namespace projTut
                     {
                         PrintError(Array.IndexOf(pseudocode, line), "Nom de variable invalide");
                         return false;
+                    }
+                }
+            }
+
+            //Vérification paramètre non vide
+            foreach (string line in pseudocode)
+            {
+                for (int i = 0; i < line.Length; i++)
+                {
+                    char c = line[i];
+                    if (c == ',')
+                    {
+                        for (int j = i - 1; j < i + 2; j += 2)
+                        {
+                            char ch = line[j];
+                            if ((ch < 'a') && (ch > 'z') && (ch < '0') && (ch > '9') && (ch != '('))
+                            {
+                                if ((j != i + 1) || (ch != '-'))
+                                {
+                                    PrintError(Array.IndexOf(pseudocode, line), "Paramètre invalide");
+                                    return false;
+                                }
+                            }
+                        }
                     }
                 }
             }
