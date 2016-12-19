@@ -61,7 +61,8 @@ namespace projTut
                         }
                         nb_par_open++;
                         char prec = line[i - 1], suiv = line[i + 1];
-                        if ((prec < 'a')||(prec > 'z'))
+                        if (((prec < 'a')||(prec > 'z')) && (prec != '-') && (prec != '+') && (prec != '*') && (prec != '/') && (prec != '=')
+                            && (prec != '>') && (prec != '<'))
                         {
                             PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit avant un '('");
                             return false;
@@ -83,8 +84,8 @@ namespace projTut
                         if (i != line.Length - 1)
                         {
                             char suiv = line[i + 1];
-                            if (suiv != '*' && suiv != '/' && suiv != '-' && suiv != '+' && suiv != ')'
-                                && suiv != ',' && suiv != '<' && suiv != '>' && suiv != '=')
+                            if ((suiv != '*') && (suiv != '/') && (suiv != '-') && (suiv != '+') && (suiv != ')')
+                                && (suiv != ',') && (suiv != '<') && (suiv != '>') && (suiv != '=') && (suiv != '%'))
                             {
                                 if (!line.Substring(i+1).Contains("donne") || line.Substring(i+1).IndexOf("donne") != 0)
                                 {
@@ -121,7 +122,22 @@ namespace projTut
             {
                 for (int i = 0; i < line.Length; i++)
                 {
-
+                    char c = line[i];
+                    if (c == ',')
+                    {
+                        for (int j = i - 1; j < i + 2; j += 2)
+                        {
+                            char ch = line[j];
+                            if ((ch < 'a') && (ch > 'z') && (ch < '0') && (ch > '9') && (ch != '('))
+                            {
+                                if ((j != i + 1) || (ch != '-'))
+                                {
+                                    PrintError(Array.IndexOf(pseudocode, line), "Paramètre invalide");
+                                    return false;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
