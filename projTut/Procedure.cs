@@ -19,6 +19,8 @@ namespace projTut
             this.nom = nom;
         }
 
+
+
         public Procedure(List<Parametre> listeParametre, string nom) : this(listeParametre, new List<Instruction>(), nom)
         {
 
@@ -27,6 +29,23 @@ namespace projTut
         public void insertInstruction(Instruction instruction)
         {
             listeInstruction.Add(new Instruction(instruction));
+        }
+
+        public void affiche()
+        {
+            int i = 1;
+            Console.WriteLine("Nom de la fonction : "+ this.nom);
+            if(listeParametre != null)
+            {
+                foreach (Parametre Para in listeParametre)
+                {
+                    Console.WriteLine("Parametre n°" + i + " :");
+                    i++;
+                    Para.affiche();
+                    Console.WriteLine("\n");
+                }
+            }
+
         }
     }
 }
