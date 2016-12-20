@@ -116,5 +116,16 @@ namespace projTut
         {
             return type;
         }
+
+        public void setVar(Variable var)
+        {
+            if (contentKnown = var.isKnown())
+            {
+                contentBool = var.contentBool;
+                contentFloat = var.contentFloat;
+                contentInt = var.contentInt;
+                contentKnown = true;
+            }
+        }
     }
 }
