@@ -61,5 +61,22 @@ namespace projTut
             }
         }
 
+        public override string ToString()
+        {
+            switch (type)
+            {
+                case types.BOOLEAN:
+                    return "BOOLEAN";
+                case types.ENTIER:
+                    return "ENTIER";
+                case types.REEL:
+                    return "REEL";
+                case types.UNKNOWN:
+                    return "UNKNOWN";
+                default:
+                    return "UNKNOWN";
+            }
+        }
+
     }
 }
