@@ -68,7 +68,7 @@ namespace projTut
             foreach (string line in pseudocode)
             {
                 Instruction ins = new Instruction(line);
-                ins.ListePara(line);
+                ins.AnalyseInstruction();
 
 
             }

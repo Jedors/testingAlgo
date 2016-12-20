@@ -27,7 +27,7 @@ namespace projTut
             this.line = line;
         }
 
-        public void ListePara(string line)
+        public void AnalyseInstruction()
         {
 
             int debutpara = line.IndexOf("(");
@@ -83,18 +83,20 @@ namespace projTut
             if (para.IndexOf(">(")!=-1 || para.IndexOf("<(") != -1 || para.IndexOf("=(") != -1 || para.IndexOf(")>") != -1 || para.IndexOf(")<") != -1 || para.IndexOf(")=") != -1)
             {
                 parametre = new Parametre(new Type(Type.types.BOOLEAN),Parametre.PassagePar.VALEUR,para);
-                ListePara(para);
+                Instruction ins = new Instruction(para);
+                ins.AnalyseInstruction();
             }
 
             else if (para.IndexOf('(') != -1)
             {
                 parametre = new Parametre(new Type(Type.types.UNKNOWN), Parametre.PassagePar.VALEUR, para);
-                ListePara(para);
+                Instruction ins = new Instruction(para);
+                ins.AnalyseInstruction();
             }
             else
             {
                 parametre = new Parametre(new Type(Type.types.UNKNOWN), Parametre.PassagePar.UNKNOWN, para);
-                ListePara(para);
+ 
             }
 
 
