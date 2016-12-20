@@ -65,6 +65,13 @@ namespace projTut
                 Console.WriteLine(line);
             }
 
+            foreach (string line in pseudocode)
+            {
+                Instruction ins = new Instruction(line);
+                ins.DeterminPara();
+
+            }
+
             Console.ReadKey();
             Console.WriteLine();
             return 0;
