@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security;
 using System.Security.Permissions;
@@ -8,6 +9,38 @@ namespace projTut
 {
     class Program
     {
+        private static List<Variable> listeVariable = new List<Variable>();
+        private static List<Procedure> listeProcedure = new List<Procedure>();
+
+
+        /// <summary>
+        /// Try to insert a Variable into listeParametre.
+        /// If already existing -> Updating the one into the list.
+        /// </summary>
+        /// <param name="var">Variable to insert</param>
+        /// <returns>1 if inserted, 2 if updated, -1 if Type error</returns>
+        public static int InsertVariable(Variable var)
+        {
+            foreach(Variable v in listeVariable)
+            {
+                if (v.getNom() == var.getNom())
+                {
+                    if (v.getType().type == Type.types.UNKNOWN)
+                    {
+                        v.getType().type = var.getType().type;
+                    }
+                    else if (v.getType().type != v.getType().type)
+                    {
+                        return -1;
+                    }
+                    var.setVar(v);
+                    return 2;
+                }
+            }
+            listeVariable.Add(new Variable(var));
+            return 1;
+        }
+
         static int Main(string[] args)
         {
             string fileName = "", appName = Properties.Resources.appName;
