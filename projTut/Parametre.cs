@@ -28,9 +28,9 @@ namespace projTut
 
         }
 
-        public void affiche()
+        public override string ToString()
         {
-            Console.WriteLine("Contenu : " + contenu + "\ntype : " + type + "\nPassé par :" +  passagePar);
+            return "\nContenu : " + contenu + "\ntype : " + type + "\nPassé par :" +  passagePar;
         }
     }
 }

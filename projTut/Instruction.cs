@@ -38,9 +38,8 @@ namespace projTut
                 int finpara = line.LastIndexOf(")");
                 int length = finpara - debutpara;
                 string para = line.Substring(debutpara+1, length-1);
-
                 string para1 = "";
-                Boolean inproc = false;
+                int inproc = 0;
                 int i= 0;
                 int j = 1;
                 List<Parametre> listeParametre = new List<Parametre>();
@@ -48,21 +47,21 @@ namespace projTut
                 {   
                     if (para[i] == '(')
                     {
-                        inproc = true;
+                        inproc ++;
                     }
 
                     else if (para[i] == ')')
                     {
-                        inproc = false;
+                        inproc --;
                     }
 
-                    if ((para[i] == ',') && (inproc==false))
-                    {
-                        
+                    if ((para[i] == ',') && (inproc==0))
+                    {    
                         listeParametre.Add(determinePara(para1));
                         para1 = "";
                         j++;
                     }
+
                     else
                     {
                         para1 += para[i];
@@ -71,7 +70,7 @@ namespace projTut
                 
                 listeParametre.Add(determinePara(para1));
                 proc = new Procedure(listeParametre, determineNom(line, debutpara));
-                proc.affiche();
+                Console.WriteLine(proc);
             }           
         }
 
@@ -93,6 +92,7 @@ namespace projTut
                 Instruction ins = new Instruction(para);
                 ins.AnalyseInstruction();
             }
+
             else
             {
                 parametre = new Parametre(new Type(Type.types.UNKNOWN), Parametre.PassagePar.UNKNOWN, para);

@@ -31,20 +31,25 @@ namespace projTut
             listeInstruction.Add(new Instruction(instruction));
         }
 
-        public void affiche()
+        
+        public override string ToString()
         {
             int i = 1;
-            Console.WriteLine("Nom de la fonction : "+ this.nom);
+            string retour;
+            retour = "Nom de la fonction : " + this.nom;
+            
             if(listeParametre != null)
             {
                 foreach (Parametre Para in listeParametre)
                 {
-                    Console.WriteLine("Parametre n°" + i + " :");
+                    retour += "\nParametre n°" + i + " :";
                     i++;
-                    Para.affiche();
-                    Console.WriteLine("\n");
+                    retour += Para.ToString();
+                    retour += "\n";
                 }
+                
             }
+            return retour;
 
         }
     }
