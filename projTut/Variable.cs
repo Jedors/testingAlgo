@@ -8,13 +8,17 @@ namespace projTut
 {
     class Variable
     {
-        private string nom;
-        private Type type;
-        private bool contentKnown;
-        private bool contentBool;
-        private int contentInt;
-        private float contentFloat;
+        private string nom;         // Nom de la variable
+        private Type type;          // Type de la variable
+        private bool contentKnown;  // Si le contenu est connu ou non
+        private bool contentBool;   // Contenu si booleen
+        private int contentInt;     // Contenu si int
+        private float contentFloat; // Contenu si float
 
+        /// <summary>
+        /// Constructeur de variable inconnu
+        /// </summary>
+        /// <param name="nom">nom de la variable</param>
         public Variable (string nom)
         {
             this.nom = nom;
@@ -22,6 +26,11 @@ namespace projTut
             type = new Type();
         }
 
+        /// <summary>
+        /// Contructeur de booleen
+        /// </summary>
+        /// <param name="nom">Nom de la variable</param>
+        /// <param name="contentBool">Contenu booleen</param>
         public Variable (string nom, bool contentBool)
         {
             this.nom = nom;
@@ -30,6 +39,11 @@ namespace projTut
             this.contentBool = contentBool;
         }
 
+        /// <summary>
+        /// Contructeur de entier
+        /// </summary>
+        /// <param name="nom">Nom de la variable</param>
+        /// <param name="contentInt">Contenu entier</param>
         public Variable (string nom, int contentInt)
         {
             this.nom = nom;
@@ -38,6 +52,11 @@ namespace projTut
             this.contentInt = contentInt;
         }
 
+        /// <summary>
+        /// Contructeur de décimal
+        /// </summary>
+        /// <param name="nom">Nom de la variable</param>
+        /// <param name="contentFloat">Contenu décimal</param>
         public Variable (string nom, float contentFloat)
         {
             this.nom = nom;
@@ -46,6 +65,11 @@ namespace projTut
             this.contentFloat = contentFloat;
         }
 
+        /// <summary>
+        /// Contructeur de tye connu mais contenu inconnu
+        /// </summary>
+        /// <param name="nom">Nom de la variable</param>
+        /// <param name="type">type de la variable</param>
         public Variable (string nom, Type type)
         {
             this.nom = nom;
@@ -53,6 +77,10 @@ namespace projTut
             contentKnown = false;
         }
 
+        /// <summary>
+        /// Constructeur de recopie
+        /// </summary>
+        /// <param name="var">Variable à copier</param>
         public Variable (Variable var)
         {
             nom = var.nom;
@@ -63,16 +91,28 @@ namespace projTut
             contentFloat = var.contentFloat;
         }
 
+        /// <summary>
+        /// Getteur de nom
+        /// </summary>
+        /// <returns>nom de la variable</returns>
         public string getNom()
         {
             return nom;
         }
 
+        /// <summary>
+        /// Défini si le contenu est connu ou non
+        /// </summary>
+        /// <returns>Boolean true si connu</returns>
         public bool isKnown()
         {
             return contentKnown;
         }
 
+        /// <summary>
+        /// Getteur de contenu, vérifie si int, lance erreur si non
+        /// </summary>
+        /// <returns>Contenu int</returns>
         public int getInt()
         {
             if (isKnown())
@@ -86,6 +126,10 @@ namespace projTut
                 throw new Exception("Valeur non connu");
         }
 
+        /// <summary>
+        /// Getteur de contenu, vérifie si booleen, lance erreur si non
+        /// </summary>
+        /// <returns>Contenu booleen</returns>
         public bool getBool()
         {
             if (isKnown())
@@ -99,6 +143,10 @@ namespace projTut
                 throw new Exception("Valeur non connu");
         }
 
+        /// <summary>
+        /// Getteur de contenu, vérifie si decimal, lance erreur si non
+        /// </summary>
+        /// <returns>Contenu float</returns>
         public float getFloat()
         {
             if (isKnown())
@@ -112,14 +160,22 @@ namespace projTut
                 throw new Exception("Valeur non connu");
         }
 
+        /// <summary>
+        /// Récupère le type de la variable
+        /// </summary>
+        /// <returns></returns>
         public Type getType()
         {
             return type;
         }
 
+        /// <summary>
+        /// attribue le contenu à la variable de celle passée en paramètre
+        /// </summary>
+        /// <param name="var">Variable à copier/assigner</param>
         public void setVar(Variable var)
         {
-            if (contentKnown = var.isKnown())
+            if (contentKnown = var.isKnown() && type.type == var.type.type)
             {
                 contentBool = var.contentBool;
                 contentFloat = var.contentFloat;
