@@ -30,14 +30,28 @@ namespace projTut
         public void AnalyseInstruction()
         {
 
+            
+            string ppv = Properties.Resources.ppv;
             int debutpara = line.IndexOf("(");
-           
             if ( debutpara != -1)
             {
-                
+                Boolean fonc = false;
+                int debutfonc= line.IndexOf(ppv);   
+                if (debutfonc != -1)
+                {
+                    string variablenom = line.Substring(0,debutfonc);
+                    line = line.Substring(debutfonc+ppv.Length);
+                    
+                    fonc = true;
+                }
+
+
+                debutpara = line.IndexOf("(");
                 int finpara = line.LastIndexOf(")");
                 int length = finpara - debutpara;
+                Console.WriteLine(line);
                 string para = line.Substring(debutpara+1, length-1);
+                Console.WriteLine(para);
                 string para1 = "";
                 int inproc = 0;
                 int i= 0;
@@ -106,16 +120,9 @@ namespace projTut
 
         private string determineNom(string proc,int debutpara)
         {
-            int debutnom = proc.IndexOf(Properties.Resources.ppv);
-            
-            if (debutnom != -1){
-                return proc.Substring(debutnom + Properties.Resources.ppv.Length, debutpara - debutnom - Properties.Resources.ppv.Length);
 
-            }
-            else
-            {
                 return proc.Substring(0, debutpara);
-            }
+            
         }
     }
 }
