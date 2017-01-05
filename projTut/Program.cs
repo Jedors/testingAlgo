@@ -9,8 +9,8 @@ namespace projTut
 {
     class Program
     {
-        private static List<Variable> listeVariable = new List<Variable>();
-        private static List<Procedure> listeProcedure = new List<Procedure>();
+        private static List<Variable> listeVariable = new List<Variable>();     // Liste des variables dans le code
+        private static List<Procedure> listeProcedure = new List<Procedure>();  // Liste des procédures et fonctions
 
 
         /// <summary>
@@ -41,10 +41,17 @@ namespace projTut
             return 1;
         }
 
+
+        /// <summary>
+        /// Fonction principale lol
+        /// </summary>
+        /// <param name="args">Les arguments/noms de fichier à analyser</param>
+        /// <returns>-1 si erreur</returns>
         static int Main(string[] args)
         {
-            string fileName = "", appName = Properties.Resources.appName;
+            string fileName = "", appName = Properties.Resources.appName; // appName alias pour ressources
 
+            // Vérification nombre d'arguments
             if(args.Length != 1)
             {
                 Console.Error.WriteLine("Un et un seul argument requis");
@@ -52,10 +59,10 @@ namespace projTut
                 return -1;
             }
 
-            fileName = args[0];
-            string[] pseudocode;
+            fileName = args[0]; // Assignarion nom de fichier
+            string[] pseudocode; // Pseudo-code à analyser
 
-            if (!File.Exists(fileName))
+            if (!File.Exists(fileName)) // Si le fichier n'existe pas...
             {
                 Console.Error.WriteLine("{0}: Fichier inexistant", fileName);
                 return -1;
@@ -64,11 +71,11 @@ namespace projTut
             {
                 FileIOPermission f = null;
 
-                try
+                try // Essaye de voir si il y a les permissions pour lire le fichier
                 {
                     f = new FileIOPermission(FileIOPermissionAccess.Read, Path.GetFullPath(fileName));
                     f.Demand();
-                    pseudocode = File.ReadAllLines(fileName);
+                    pseudocode = File.ReadAllLines(fileName); // Lis le fichier
                 }
                 catch (SecurityException e)
                 {
@@ -77,6 +84,7 @@ namespace projTut
                 }
             }
 
+            // Mise en forme du code (Minuscule + suppresion espaces)
             for (int i = 0; i < pseudocode.Length; i++)
             {
                 pseudocode[i] = pseudocode[i].ToLower();
@@ -85,7 +93,7 @@ namespace projTut
             }
 
             Parser pars = new Parser(pseudocode);
-            if (!pars.isValid())
+            if (!pars.isValid()) // Si code non valide -> Erreur
             {
                 Console.Error.WriteLine("Analyse abbandonnée");
                 Console.ReadKey();

@@ -9,21 +9,34 @@ namespace projTut
 {
     class Parser
     {
-        private string[] pseudocode;
-        string ppv = Properties.Resources.ppv;
+        private string[] pseudocode; // Pseudo-code à analyser
+        string ppv = Properties.Resources.ppv; // Alias de ppv dans les ressources
 
+        /// <summary>
+        /// Affiche une erreur
+        /// </summary>
+        /// <param name="ligneerreur">Id de la ligne contenant l'erreur</param>
+        /// <param name="message">Message d'erreur à afficher</param>
         private void PrintError(int ligneerreur, string message)
         {
             Console.Error.WriteLine("Erreur à la ligne {0}: {1}", ligneerreur + 1, pseudocode[ligneerreur]);
             Console.Error.WriteLine(message);
         }
 
+        /// <summary>
+        /// Contructeur par défaut, rempli avec le code
+        /// </summary>
+        /// <param name="pseudocode">Code à analyser</param>
         public Parser(string[] pseudocode)
         {
             this.pseudocode = pseudocode;
         }
 
-        // A factoriser plus tard
+        // A factoriser plus tard + Documenter
+        /// <summary>
+        /// Renvoie un booléen si le code est valide ou non
+        /// </summary>
+        /// <returns>True si valide</returns>
         public bool isValid()
         {
             //Vérification symbole assignation
