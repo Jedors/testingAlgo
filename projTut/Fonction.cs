@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace projTut
@@ -25,5 +26,28 @@ namespace projTut
         {
             this.retour = new Variable(retour);
         }
+
+        public Fonction(List<Parametre> listeParametre, string nom, Variable retour)
+    : base(listeParametre, nom)
+        {
+            this.retour = new Variable(retour);
+        }
+
+        public Fonction(string line)
+            :base(line)
+        {
+            
+        }
+
+       
+
+
+
+        public override string ToString()
+        {
+ 
+            return Regex.Replace(base.ToString(), "procedure", "fonction") + "blabla";
+        }
+
     }
 }
