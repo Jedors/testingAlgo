@@ -26,27 +26,66 @@ namespace projTut
         public void AnalyseInstruction()
         {       
             string ppv = Properties.Resources.ppv;
-            int debutpara = Line.IndexOf("(");
-            if ( debutpara != -1)
+            int inproc = 0;
+            Boolean proc = false;
+            string outil="";
+            List<string> listeOutil=new List<string>();
+            for (int i = 0; i < Line.Length; i++)
             {
-                Boolean fonc = false;
-                int debutfonc= Line.IndexOf(ppv);
-                if (debutfonc != -1)
+                if (Line[i] == '(')
                 {
-                    string variablenom = Line.Substring(0, debutfonc);
-                    Line = Line.Substring(debutfonc + ppv.Length);
-                    fonc = true;
-                    new Fonction(Line);
+                    inproc++;
+                    if(Char.IsLetter(Line[i-1]))
+                    {
+                        proc = true;
+                    }
+                    
                 }
 
+                else if (Line[i] == ')')
+                {
+                    inproc--;
+                }
 
+                if ((Line[i] == '+'|| Line[i] == '-' || Line[i] == '*' || Line[i] =='/' || i+1==Line.Length) && (inproc == 0) && proc )
+                {
+                    
+                    outil += Line[i];
+                    int debutpara = Line.IndexOf("(");
+
+                    if (debutpara != -1)
+                    {
+
+                        int debutfonc = outil.IndexOf(ppv);
+                        if (debutfonc != -1)
+                        {
+                            string variablenom = outil.Substring(0, debutfonc);
+                            outil = outil.Substring(debutfonc + ppv.Length);
+                            new Procedure(outil);
+                        }
+
+
+
+                        else
+                        {
+                            Console.WriteLine(outil);
+                            new Procedure(outil);
+                        }
+                    }
+                    outil = "";
+                    proc = false;
+
+                }
 
                 else
                 {
-                    Console.WriteLine(Line);
-                    new Procedure(Line);
+                    outil += Line[i];
                 }
             }
+
+
+
+          
 
                   
         }

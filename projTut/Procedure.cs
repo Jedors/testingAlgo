@@ -60,9 +60,7 @@ namespace projTut
             int debutpara = line.IndexOf("(");
             int finpara = line.LastIndexOf(")");
             int length = finpara - debutpara;
-            Console.WriteLine(line);
             string para = line.Substring(debutpara + 1, length - 1);
-            Console.WriteLine(para);
             string para1 = "";
             int inproc = 0;
             int i = 0;
