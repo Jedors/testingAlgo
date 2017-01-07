@@ -7,10 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace projTut
 {
-    class Program
+    internal class Program
     {
-        private static List<Variable> listeVariable = new List<Variable>();     // Liste des variables dans le code
-        private static List<Procedure> listeProcedure = new List<Procedure>();  // Liste des procédures et fonctions
+        private static readonly List<Variable> ListeVariable = new List<Variable>();     // Liste des variables dans le code
+        private static List<Procedure> _listeProcedure = new List<Procedure>();  // Liste des procédures et fonctions
 
 
         /// <summary>
@@ -21,23 +21,23 @@ namespace projTut
         /// <returns>1 if inserted, 2 if updated, -1 if Type error</returns>
         public static int InsertVariable(Variable var)
         {
-            foreach(Variable v in listeVariable)
+            foreach(Variable v in ListeVariable)
             {
-                if (v.getNom() == var.getNom())
+                if (v.Nom == var.Nom)
                 {
-                    if (v.getType().type == Type.types.UNKNOWN)
+                    if (v.Type.Type == TypeEnum.Unknown)
                     {
-                        v.getType().type = var.getType().type;
+                        v.Type.Type = var.Type.Type;
                     }
-                    else if (v.getType().type != v.getType().type)
+                    else if (v.Type.Type != var.Type.Type)
                     {
                         return -1;
                     }
-                    var.setVar(v);
+                    var.SetVar(v);
                     return 2;
                 }
             }
-            listeVariable.Add(new Variable(var));
+            ListeVariable.Add(new Variable(var));
             return 1;
         }
 
@@ -49,7 +49,7 @@ namespace projTut
         /// <returns>-1 si erreur</returns>
         static int Main(string[] args)
         {
-            string fileName = "", appName = Properties.Resources.appName; // appName alias pour ressources
+            string appName = Properties.Resources.appName; // appName alias pour ressources
 
             // Vérification nombre d'arguments
             if(args.Length != 1)
@@ -59,7 +59,7 @@ namespace projTut
                 return -1;
             }
 
-            fileName = args[0]; // Assignarion nom de fichier
+            string fileName = args[0]; // Assignarion nom de fichier
             string[] pseudocode; // Pseudo-code à analyser
 
             if (!File.Exists(fileName)) // Si le fichier n'existe pas...
@@ -67,21 +67,16 @@ namespace projTut
                 Console.Error.WriteLine("{0}: Fichier inexistant", fileName);
                 return -1;
             }
-            else
+            try // Essaye de voir si il y a les permissions pour lire le fichier
             {
-                FileIOPermission f = null;
-
-                try // Essaye de voir si il y a les permissions pour lire le fichier
-                {
-                    f = new FileIOPermission(FileIOPermissionAccess.Read, Path.GetFullPath(fileName));
-                    f.Demand();
-                    pseudocode = File.ReadAllLines(fileName); // Lis le fichier
-                }
-                catch (SecurityException e)
-                {
-                    Console.Error.WriteLine("{0}: {1}", appName, e.Message);
-                    return -1;
-                }
+                FileIOPermission f = new FileIOPermission(FileIOPermissionAccess.Read, Path.GetFullPath(fileName));
+                f.Demand();
+                pseudocode = File.ReadAllLines(fileName); // Lis le fichier
+            }
+            catch (SecurityException e)
+            {
+                Console.Error.WriteLine("{0}: {1}", appName, e.Message);
+                return -1;
             }
 
             // Mise en forme du code (Minuscule + suppresion espaces)
@@ -93,7 +88,7 @@ namespace projTut
             }
 
             Parser pars = new Parser(pseudocode);
-            if (!pars.isValid()) // Si code non valide -> Erreur
+            if (!pars.IsValid()) // Si code non valide -> Erreur
             {
                 Console.Error.WriteLine("Analyse abbandonnée");
                 Console.ReadKey();

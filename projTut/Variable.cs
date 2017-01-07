@@ -1,186 +1,158 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace projTut
 {
-    class Variable
+    internal class Variable
     {
-        private string nom;         // Nom de la variable
-        private Type type;          // Type de la variable
-        private bool contentKnown;  // Si le contenu est connu ou non
-        private bool contentBool;   // Contenu si booleen
-        private int contentInt;     // Contenu si int
-        private float contentFloat; // Contenu si float
+        public string Nom { get; }
+        public TypeElement Type { get; }
+        private bool _contentBool; // Contenu si booleen
+        private float _contentFloat; // Contenu si float
+        private int _contentInt; // Contenu si int
+        private bool _contentKnown; // Si le contenu est connu ou non
 
         /// <summary>
-        /// Constructeur de variable inconnu
+        ///     Constructeur de variable inconnu
         /// </summary>
         /// <param name="nom">nom de la variable</param>
-        public Variable (string nom)
+        public Variable(string nom)
         {
-            this.nom = nom;
-            contentKnown = false;
-            type = new Type();
+            Nom = nom;
+            _contentKnown = false;
+            Type = new TypeElement();
         }
 
         /// <summary>
-        /// Contructeur de booleen
+        ///     Contructeur de booleen
         /// </summary>
         /// <param name="nom">Nom de la variable</param>
         /// <param name="contentBool">Contenu booleen</param>
-        public Variable (string nom, bool contentBool)
+        public Variable(string nom, bool contentBool)
         {
-            this.nom = nom;
-            type = new Type(Type.types.BOOLEAN);
-            contentKnown = true;
-            this.contentBool = contentBool;
+            Nom = nom;
+            Type = new TypeElement(TypeEnum.Boolean);
+            _contentKnown = true;
+            _contentBool = contentBool;
         }
 
         /// <summary>
-        /// Contructeur de entier
+        ///     Contructeur de entier
         /// </summary>
         /// <param name="nom">Nom de la variable</param>
         /// <param name="contentInt">Contenu entier</param>
-        public Variable (string nom, int contentInt)
+        public Variable(string nom, int contentInt)
         {
-            this.nom = nom;
-            type = new Type(Type.types.ENTIER);
-            contentKnown = true;
-            this.contentInt = contentInt;
+            Nom = nom;
+            Type = new TypeElement(TypeEnum.Entier);
+            _contentKnown = true;
+            _contentInt = contentInt;
         }
 
         /// <summary>
-        /// Contructeur de décimal
+        ///     Contructeur de décimal
         /// </summary>
         /// <param name="nom">Nom de la variable</param>
         /// <param name="contentFloat">Contenu décimal</param>
-        public Variable (string nom, float contentFloat)
+        public Variable(string nom, float contentFloat)
         {
-            this.nom = nom;
-            type = new Type(Type.types.REEL);
-            contentKnown = true;
-            this.contentFloat = contentFloat;
+            Nom = nom;
+            Type = new TypeElement(TypeEnum.Reel);
+            _contentKnown = true;
+            _contentFloat = contentFloat;
         }
 
         /// <summary>
-        /// Contructeur de tye connu mais contenu inconnu
+        ///     Contructeur de tye connu mais contenu inconnu
         /// </summary>
         /// <param name="nom">Nom de la variable</param>
         /// <param name="type">type de la variable</param>
-        public Variable (string nom, Type type)
+        public Variable(string nom, TypeElement type)
         {
-            this.nom = nom;
-            this.type = new Type(type);
-            contentKnown = false;
+            Nom = nom;
+            Type = new TypeElement(type);
+            _contentKnown = false;
         }
 
         /// <summary>
-        /// Constructeur de recopie
+        ///     Constructeur de recopie
         /// </summary>
         /// <param name="var">Variable à copier</param>
-        public Variable (Variable var)
+        public Variable(Variable var)
         {
-            nom = var.nom;
-            type = new Type(var.type);
-            contentKnown = var.contentKnown;
-            contentBool = var.contentBool;
-            contentInt = var.contentInt;
-            contentFloat = var.contentFloat;
+            Nom = var.Nom;
+            Type = new TypeElement(var.Type);
+            _contentKnown = var._contentKnown;
+            _contentBool = var._contentBool;
+            _contentInt = var._contentInt;
+            _contentFloat = var._contentFloat;
         }
 
         /// <summary>
-        /// Getteur de nom
-        /// </summary>
-        /// <returns>nom de la variable</returns>
-        public string getNom()
-        {
-            return nom;
-        }
-
-        /// <summary>
-        /// Défini si le contenu est connu ou non
+        ///     Défini si le contenu est connu ou non
         /// </summary>
         /// <returns>Boolean true si connu</returns>
-        public bool isKnown()
+        public bool IsKnown()
         {
-            return contentKnown;
+            return _contentKnown;
         }
 
         /// <summary>
-        /// Getteur de contenu, vérifie si int, lance erreur si non
+        ///     Getteur de contenu, vérifie si int, lance erreur si non
         /// </summary>
         /// <returns>Contenu int</returns>
-        public int getInt()
+        public int GetInt()
         {
-            if (isKnown())
+            if (IsKnown())
             {
-                if (getType().type == Type.types.ENTIER)
-                    return contentInt;
-                else
-                    throw new Exception("Erreur de type");
+                if (Type.Type == TypeEnum.Entier)
+                    return _contentInt;
+                throw new Exception("Erreur de type");
             }
-            else
-                throw new Exception("Valeur non connu");
+            throw new Exception("Valeur non connu");
         }
 
         /// <summary>
-        /// Getteur de contenu, vérifie si booleen, lance erreur si non
+        ///     Getteur de contenu, vérifie si booleen, lance erreur si non
         /// </summary>
         /// <returns>Contenu booleen</returns>
-        public bool getBool()
+        public bool GetBool()
         {
-            if (isKnown())
+            if (IsKnown())
             {
-                if (getType().type == Type.types.BOOLEAN)
-                    return contentBool;
-                else
-                    throw new Exception("Erreur de type");
+                if (Type.Type == TypeEnum.Boolean)
+                    return _contentBool;
+                throw new Exception("Erreur de type");
             }
-            else
-                throw new Exception("Valeur non connu");
+            throw new Exception("Valeur non connu");
         }
 
         /// <summary>
-        /// Getteur de contenu, vérifie si decimal, lance erreur si non
+        ///     Getteur de contenu, vérifie si decimal, lance erreur si non
         /// </summary>
         /// <returns>Contenu float</returns>
-        public float getFloat()
+        public float GetFloat()
         {
-            if (isKnown())
+            if (IsKnown())
             {
-                if (getType().type == Type.types.REEL)
-                    return contentFloat;
-                else
-                    throw new Exception("Erreur de type");
+                if (Type.Type == TypeEnum.Reel)
+                    return _contentFloat;
+                throw new Exception("Erreur de type");
             }
-            else
-                throw new Exception("Valeur non connu");
+            throw new Exception("Valeur non connu");
         }
 
         /// <summary>
-        /// Récupère le type de la variable
-        /// </summary>
-        /// <returns></returns>
-        public Type getType()
-        {
-            return type;
-        }
-
-        /// <summary>
-        /// attribue le contenu à la variable de celle passée en paramètre
+        ///     attribue le contenu à la variable de celle passée en paramètre
         /// </summary>
         /// <param name="var">Variable à copier/assigner</param>
-        public void setVar(Variable var)
+        public void SetVar(Variable var)
         {
-            if (contentKnown = var.isKnown() && type.type == var.type.type)
+            if (_contentKnown == var.IsKnown() && Type.Type == var.Type.Type)
             {
-                contentBool = var.contentBool;
-                contentFloat = var.contentFloat;
-                contentInt = var.contentInt;
-                contentKnown = true;
+                _contentBool = var._contentBool;
+                _contentFloat = var._contentFloat;
+                _contentInt = var._contentInt;
+                _contentKnown = true;
             }
         }
     }
