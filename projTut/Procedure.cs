@@ -109,14 +109,14 @@ namespace projTut
 
             else if (para.IndexOf('(') != -1)
             {
-                parametre = new Parametre(new Type(Type.types.UNKNOWN), Parametre.PassagePar.VALEUR, para);
+                parametre = new Parametre(Parametre.PassagePar.VALEUR, para);
                 Instruction ins = new Instruction(para);
                 ins.AnalyseInstruction();
             }
 
             else
             {
-                parametre = new Parametre(new Type(Type.types.UNKNOWN), Parametre.PassagePar.UNKNOWN, para);
+                parametre = new Parametre(Parametre.PassagePar.UNKNOWN, para);
 
             }
 
@@ -129,5 +129,6 @@ namespace projTut
             return proc.Substring(0, debutpara);
 
         }
+
     }
 }

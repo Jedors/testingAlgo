@@ -30,10 +30,70 @@ namespace projTut
         /// <param name="contenu">Contenu à faire analyser</param>
         public Parametre(Type type, PassagePar passagePar,string contenu)
         {
-            
+
             this.type = new Type(type); // Instanciation d'une copie -> Ne doit pas être modifiable de l'extérieur
             this.passagePar = passagePar;
             this.contenu = contenu;
+
+        }
+
+        /// <summary>
+        /// Constructeur sans type donné
+        /// </summary>
+        /// <param name="passagePar"></param>
+        /// <param name="contenu"></param>
+        public Parametre(PassagePar passagePar, string contenu)
+        {
+
+            this.passagePar = passagePar;
+            this.contenu = contenu;
+            this.type = determineType(contenu);
+
+        }
+
+        private Type determineType(string contenu)
+        {
+
+            bool decimalReal = false;
+            bool isReal = false;
+            bool isInt = true;
+            char[] tab_contenu = contenu.ToCharArray();
+            List<char> chiffre = new List<char>();
+            chiffre.Add('1'); chiffre.Add('2'); chiffre.Add('3'); chiffre.Add('4'); chiffre.Add('5');
+            chiffre.Add('6'); chiffre.Add('7'); chiffre.Add('8'); chiffre.Add('9'); chiffre.Add('0');
+
+            foreach (char caract in tab_contenu)
+            {
+                if (!chiffre.Contains(caract))
+                {
+                    isInt = false;
+                    if (caract == '.' && decimalReal == false)
+                    {
+                        decimalReal = true;
+                        isInt = true;
+                        isReal = true;
+                    }
+                }
+            }
+
+            if (isInt)
+            {
+                if (isReal)
+                {
+                    return new Type(Type.types.REEL);
+                }
+                return new Type(Type.types.ENTIER);
+            }
+            else if (contenu.ToLower() == "true" || contenu.ToLower() == "false")
+            {
+                return new Type(Type.types.BOOLEAN);
+            }
+            else
+            {
+                return new Type(Type.types.UNKNOWN);
+            }
+            
+
 
         }
 
