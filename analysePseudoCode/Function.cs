@@ -1,22 +1,38 @@
 ﻿namespace analysePseudoCode
 {
+    /// <summary>
+    /// A function is a procedure, with a return type
+    /// </summary>
     internal class Function : Procedure
     {
-        internal TypeElement TypeFunction { get; }
+        /// <summary>
+        /// Return type of the function
+        /// </summary>
+        internal TypeElement FunctionType { get; }
 
-        public Function(string nom, TypeElement type, params Parameter[] listeParam) : base(nom, listeParam)
+        /// <summary>
+        /// Constructor of the function, like a procedure, with a type added
+        /// </summary>
+        /// <param name="name">Name of the function</param>
+        /// <param name="type">Function type</param>
+        /// <param name="listeParam">Parameter list of the function</param>
+        public Function(string name, TypeElement type, params Parameter[] listeParam) : base(name, listeParam)
         {
-            TypeFunction = type;
+            FunctionType = type;
         }
 
+        /// <summary>
+        /// Basic ToString, simply format properly the thing
+        /// </summary>
+        /// <returns>Beautiful formating of the function</returns>
         public override string ToString()
         {
             string param = "";
-            foreach (Parameter parameter in ListeParametres)
+            foreach (Parameter parameter in ParameterList)
             {
                 param += "  " + parameter + "\n";
             }
-            return $"Function {Nom} {{Type: {TypeFunction}, ListeParam: \n{param}}}";
+            return $"Function {Name} {{Type: {FunctionType}, ListeParam: \n{param}}}";
         }
     }
 }

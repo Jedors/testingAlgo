@@ -3,27 +3,41 @@ using System.Collections.Generic;
 
 namespace analysePseudoCode
 {
+    /// <summary>
+    /// Procedure
+    /// </summary>
     internal class Procedure
     {
-        internal List<Parameter> ListeParametres { get; }
-        internal string Nom { get; }
+        /// <summary>
+        /// Parameter list of the procedure
+        /// </summary>
+        internal List<Parameter> ParameterList { get; }
+        /// <summary>
+        /// Name of the procedure
+        /// </summary>
+        internal string Name { get; }
 
+        /// <summary>
+        /// Check if liste seem to came from the same procedure
+        /// </summary>
+        /// <param name="liste">list to compare</param>
+        /// <returns>True if Is list match</returns>
         internal bool IsListMatch(List<Parameter> liste)
         {
-            if (ListeParametres.Count == liste.Count)
+            if (ParameterList.Count == liste.Count)
             {
-                for (int i = 0; i < ListeParametres.Count; i++)
+                for (int i = 0; i < ParameterList.Count; i++)
                 {
-                    if (ListeParametres[i].TypeParam.Type != liste[i].TypeParam.Type &&
-                        ListeParametres[i].TypeParam.Type != TypeEnum.Unknown &&
-                        liste[i].TypeParam.Type != TypeEnum.Unknown)
+                    if (ParameterList[i].TypeParam.Type != liste[i].TypeParam.Type &&
+                        ParameterList[i].TypeParam.Type != TypeEnum.Unknown &&
+                        liste[i].TypeParam.Type != TypeEnum.Unknown) // If type isn't legit
                     {
                         return false;
                     }
 
-                    if (ListeParametres[i].TypePass != liste[i].TypePass &&
-                        ListeParametres[i].TypePass != TypePassage.Unknown &&
-                        liste[i].TypePass != TypePassage.Unknown)
+                    if (ParameterList[i].TypePass != liste[i].TypePass &&
+                        ParameterList[i].TypePass != TypePassage.Unknown &&
+                        liste[i].TypePass != TypePassage.Unknown) // If type passage isn't legit 
                     {
                         return false;
                     }
@@ -33,11 +47,16 @@ namespace analysePseudoCode
             return false;
         }
 
-        public Procedure(string nom, params Parameter[] listeParam)
+        /// <summary>
+        /// Procedure constructor
+        /// </summary>
+        /// <param name="name">Name of the procedure</param>
+        /// <param name="listeParam">List of the parameter</param>
+        public Procedure(string name, params Parameter[] listeParam)
         {
-            Nom = nom;
-            ListeParametres = new List<Parameter>();
-            if (listeParam.Length > 0)
+            Name = name;
+            ParameterList = new List<Parameter>();
+            if (listeParam.Length > 0) // Parameter verification
             {
                 HashSet<Parameter> paramHashSet = new HashSet<Parameter>();
 
@@ -54,19 +73,23 @@ namespace analysePseudoCode
 
                 foreach (Parameter param in listeParam)
                 {
-                    ListeParametres.Add(param);
+                    ParameterList.Add(param);
                 }
             }
         }
 
+        /// <summary>
+        /// Basic ToString, simply format properly the thing
+        /// </summary>
+        /// <returns>Beautiful formating of the procedure</returns>
         public override string ToString()
         {
             string param = "";
-            foreach (Parameter parameter in ListeParametres)
+            foreach (Parameter parameter in ParameterList)
             {
                 param += "  " + parameter + "\n";
             }
-            return $"Procedure {Nom} {{ListeParam: \n{param}}}";
+            return $"Procedure {Name} {{ListeParam: \n{param}}}";
         }
     }
 }

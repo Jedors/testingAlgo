@@ -70,7 +70,7 @@ namespace analysePseudoCode
                 if (IsConstant(scope))
                     type = AnalyseConstant(scope).Type;
                 if (IsFunction(scope))
-                    type = AnalyseFunction(scope, false).TypeFunction;
+                    type = AnalyseFunction(scope, false).FunctionType;
                 return type;
             }
 
@@ -297,7 +297,7 @@ namespace analysePseudoCode
             if (IsConstant(calcul))
                 return AnalyseConstant(calcul);
             if (IsFunction(calcul))
-                return new Variable("function", AnalyseFunction(calcul, fromAssignation).TypeFunction);
+                return new Variable("function", AnalyseFunction(calcul, fromAssignation).FunctionType);
 
             if (!IsScopeValid(calcul))
                 throw new ArithmeticException();
@@ -334,5 +334,10 @@ namespace analysePseudoCode
             throw new Exception("Not understandable error");
         }
         #endregion
+
+        public override string ToString()
+        {
+            return Ligne;
+        }
     }
 }

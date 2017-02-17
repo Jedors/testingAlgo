@@ -3,49 +3,58 @@ using System.Text.RegularExpressions;
 
 namespace analysePseudoCode
 {
+    /// <summary>
+    /// Parser to check the code syntax
+    /// </summary>
     internal class Parser
     {
-        private readonly string[] _pseudocode; // Pseudo-code à analyser
-        private readonly string _ppv = Properties.Resources.ppv; // Alias de ppv dans les ressources
+        /// <summary>
+        /// Pseudo-code to analyse
+        /// </summary>
+        private readonly string[] _pseudocode;
+        /// <summary>
+        /// Alias of ppv in the ressource
+        /// </summary>
+        private readonly string _ppv = Properties.Resources.ppv;
 
         /// <summary>
-        /// Affiche une erreur
+        /// Print an error
         /// </summary>
-        /// <param name="ligneerreur">Id de la ligne contenant l'erreur</param>
-        /// <param name="message">Message d'erreur à afficher</param>
-        private void PrintError(int ligneerreur, string message)
+        /// <param name="lineerror">Line ID containing the error</param>
+        /// <param name="message">Error message to print</param>
+        private void PrintError(int lineerror, string message)
         {
-            Console.Error.WriteLine("Erreur à la ligne {0}: {1}", ligneerreur + 1, _pseudocode[ligneerreur]);
+            Console.Error.WriteLine("Error at line {0}: {1}", lineerror + 1, _pseudocode[lineerror]);
             Console.Error.WriteLine(message);
         }
 
         /// <summary>
-        /// Contructeur par défaut, rempli avec le code
+        /// Default contructor, fill with the code
         /// </summary>
-        /// <param name="pseudocode">Code à analyser</param>
+        /// <param name="pseudocode">Code to analyse</param>
         public Parser(string[] pseudocode)
         {
             _pseudocode = pseudocode;
         }
 
-        // A factoriser plus tard + Documenter
+        // To factorise later
         /// <summary>
-        /// Renvoie un booléen si le code est valide ou non
+        /// Return a boolean if the code is or not valid
         /// </summary>
-        /// <returns>True si valide</returns>
+        /// <returns>True if valid</returns>
         public bool IsValid()
         {
-            //Vérification symbole assignation
+            //Verification assignation symbole
             foreach (string line in _pseudocode)
             {
-                //Si affiche next ite;
+                //If affiche next ite;
                 Regex affRegex = new Regex(@"^affiche\([a-z]+\)donne((\d+)|(\d+\.\d+)|(vrai)|(faux))$");
                 Regex keywordRegex = new Regex(@"(([^a-z]vrai[^a-z])|([^a-z]faux[^a-z])|([^a-z]affiche[^a-z])|([^a-z]donne[^a-z]))");
                 if (affRegex.IsMatch(line))
                     continue;
                 if (keywordRegex.IsMatch(line))
                 {
-                    PrintError(Array.IndexOf(_pseudocode, line), "Vrai, faux, affiche, et donne sont des mots-clés interdit");
+                    PrintError(Array.IndexOf(_pseudocode, line), "Vrai, faux, affiche, and donne are reservated keyword");
                     return false;
                 }
 
@@ -56,19 +65,19 @@ namespace analysePseudoCode
                     if (line.IndexOf(_ppv, StringComparison.Ordinal) == 0 ||
                         line.IndexOf(_ppv, StringComparison.Ordinal) == line.Length - 2)
                     {
-                        PrintError(Array.IndexOf(_pseudocode, line), "Symbole d'assignation en début ou fin de chaîne");
+                        PrintError(Array.IndexOf(_pseudocode, line), "Assignation symbole at beginning or end of string");
                         return false;
                     }
                 }
                 else if (needleCount > 1)
                 {
-                    PrintError(Array.IndexOf(_pseudocode, line), "Double symbole d'assignation");
+                    PrintError(Array.IndexOf(_pseudocode, line), "Double assignation symbole");
                     return false;
                 }
             }
 
-            //Vérification parenthésage
-            int nbParOpen = 0; //nombre de parenthèses ouvertes
+            //"Vérification parenthésage"
+            int nbParOpen = 0; //number of "parenthèses" open
             foreach (string line in _pseudocode)
             {
                 for (int i = 0; i < line.Length; i++)
@@ -78,7 +87,7 @@ namespace analysePseudoCode
                     {
                         if (i == line.Length - 1)
                         {
-                            PrintError(Array.IndexOf(_pseudocode, line), "'(' en fin de ligne");
+                            PrintError(Array.IndexOf(_pseudocode, line), "'(' in end of line");
                             return false;
                         }
                         nbParOpen++;
@@ -86,12 +95,12 @@ namespace analysePseudoCode
                         if (((prec < 'a') || (prec > 'z')) && (prec != '-') && (prec != '+') && (prec != '*') && (prec != '/') && (prec != '=')
                             && (prec != '>') && (prec != '<'))
                         {
-                            PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit avant un '('");
+                            PrintError(Array.IndexOf(_pseudocode, line), "Forbidden character before '('");
                             return false;
                         }
                         if ((suiv < 'a') && (suiv > 'z') && (suiv < '0') && (suiv > '9') && (suiv != '-') && (suiv != '('))
                         {
-                            PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit après un '('");
+                            PrintError(Array.IndexOf(_pseudocode, line), "Forbidden character after '('");
                             return false;
                         }
                     }
@@ -112,7 +121,7 @@ namespace analysePseudoCode
                                 if (!line.Substring(i + 1).Contains("donne") || line.Substring(i + 1)
                                     .IndexOf("donne", StringComparison.Ordinal) != 0)
                                 {
-                                    PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit après un ')'");
+                                    PrintError(Array.IndexOf(_pseudocode, line), "Forbidden character after ')'");
                                     return false;
                                 }
                             }
@@ -126,7 +135,7 @@ namespace analysePseudoCode
                 }
             }
 
-            //Vérif nom variable
+            //Verification variable name
             foreach (string line in _pseudocode)
             {
                 if (line.Contains(_ppv))
@@ -134,13 +143,13 @@ namespace analysePseudoCode
                     string nomVar = line.Substring(0, line.IndexOf(_ppv, StringComparison.Ordinal));
                     if (nomVar[0] < 'a' || nomVar[0] > 'z')
                     {
-                        PrintError(Array.IndexOf(_pseudocode, line), "Nom de variable invalide");
+                        PrintError(Array.IndexOf(_pseudocode, line), "Variable name not correct");
                         return false;
                     }
                 }
             }
 
-            //Vérification paramètre non vide
+            //Verification parameter not empty
             foreach (string line in _pseudocode)
             {
                 for (int i = 0; i < line.Length; i++)
@@ -155,7 +164,7 @@ namespace analysePseudoCode
                             {
                                 if ((j != i + 1) || (ch != '-'))
                                 {
-                                    PrintError(Array.IndexOf(_pseudocode, line), "Paramètre invalide");
+                                    PrintError(Array.IndexOf(_pseudocode, line), "Invalid parameter");
                                     return false;
                                 }
                             }
@@ -174,12 +183,11 @@ namespace analysePseudoCode
                     Regex varValid = new Regex(@"^[a-z]+$");
                     if (!varValid.IsMatch(firstElement))
                     {
-                        PrintError(Array.IndexOf(_pseudocode, line), "Nom de variable invalide");
+                        PrintError(Array.IndexOf(_pseudocode, line), "Variable name invalid");
                         return false;
                     }
                 }
             }
-            
             
 
             return true;

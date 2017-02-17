@@ -3,30 +3,71 @@ using System.Globalization;
 
 namespace analysePseudoCode
 {
+    /// <summary>
+    /// Variable
+    /// </summary>
     internal class Variable
     {
-        public string Nom { get; }
+        /// <summary>
+        /// Name of the variable
+        /// </summary>
+        public string Name { get; }
+        /// <summary>
+        /// Type of the variable
+        /// </summary>
         public TypeElement Type { get; }
-        private bool _contentBool; // Contenu si booleen
-        private float _contentFloat; // Contenu si float
-        private int _contentInt; // Contenu si int
+        /// <summary>
+        /// Content if type is boolean
+        /// </summary>
+        private bool _contentBool;
+        /// <summary>
+        /// Content if type is float
+        /// </summary>
+        private float _contentFloat;
+        /// <summary>
+        /// Content if type is integer
+        /// </summary>
+        private int _contentInt;
+        /// <summary>
+        /// Define if the content of the variable is known
+        /// </summary>
         internal bool ContentKnown { get; private set; }
 
         /// <summary>
-        ///     Constructeur de variable inconnu
+        /// Constructor of the variable if only having a type
         /// </summary>
-        /// <param name="nom">nom de la variable</param>
-        public Variable(string nom) : this(nom, new TypeElement()) { }
+        /// <param name="name">Name of the variable</param>
+        /// <param name="type">Variable type</param>
+        public Variable(string name, TypeElement type) : this(name, type, false, false,  0.0f, 0) { }
 
-        public Variable(string nom, TypeElement type) : this(nom, type, false, false,  0.0f, 0) { }
+        /// <summary>
+        /// Constructor of a boolean variable by having content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="contentBool">Boolean content</param>
+        public Variable(string name, bool contentBool) : this(name, new TypeElement(TypeEnum.Boolean), contentBool) { }
 
-        public Variable(string nom, bool contentBool) : this(nom, new TypeElement(TypeEnum.Boolean), contentBool) { }
+        /// <summary>
+        /// Constructor of a real variable by having content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="contentFloat">Float content</param>
+        public Variable(string name, float contentFloat) : this(name, new TypeElement(TypeEnum.Real), contentFloat) { }
 
-        public Variable(string nom, float contentFloat) : this(nom, new TypeElement(TypeEnum.Real), contentFloat) { }
+        /// <summary>
+        /// Constructor of an integer variable by having content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="contentInt">Integer content</param>
+        public Variable(string name, int contentInt) : this(name, new TypeElement(TypeEnum.Integer), contentInt) { }
 
-        public Variable(string nom, int contentInt) : this(nom, new TypeElement(TypeEnum.Integer), contentInt) { }
-
-        public Variable(string nom, TypeElement type, bool contentBool) : this(nom, type, true, contentBool, 0.0f, 0)
+        /// <summary>
+        /// Constructor of a variable with type already existing and boolean content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="type">Type of the variable</param>
+        /// <param name="contentBool">Boolean content</param>
+        public Variable(string name, TypeElement type, bool contentBool) : this(name, type, true, contentBool, 0.0f, 0)
         {
             if (type.Type == TypeEnum.Unknown)
                 type.Type = TypeEnum.Boolean;
@@ -37,7 +78,13 @@ namespace analysePseudoCode
             }
         }
 
-        public Variable(string nom, TypeElement type, float contentFloat) : this(nom, type, true, false, contentFloat, 0)
+        /// <summary>
+        /// Constructor of a variable with type already existing and float content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="type">Type of the variable</param>
+        /// <param name="contentFloat">Float content</param>
+        public Variable(string name, TypeElement type, float contentFloat) : this(name, type, true, false, contentFloat, 0)
         {
             if (type.Type == TypeEnum.Unknown)
                 type.Type = TypeEnum.Real;
@@ -48,7 +95,13 @@ namespace analysePseudoCode
             }
         }
 
-        public Variable(string nom, TypeElement type, int contentInt) : this(nom, type, true, false, 0.0f, contentInt)
+        /// <summary>
+        /// Constructor of a variable with type already existing and integer content
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="type">Type of the variable</param>
+        /// <param name="contentInt">Integer content</param>
+        public Variable(string name, TypeElement type, int contentInt) : this(name, type, true, false, 0.0f, contentInt)
         {
             if (type.Type == TypeEnum.Unknown)
                 type.Type = TypeEnum.Integer;
@@ -59,10 +112,19 @@ namespace analysePseudoCode
             }
         }
 
-        private Variable(string nom, TypeElement type, bool contentKnown,
+        /// <summary>
+        /// Full constructor
+        /// </summary>
+        /// <param name="name">Name of the variable</param>
+        /// <param name="type">Type of the variable</param>
+        /// <param name="contentKnown">f the content is known</param>
+        /// <param name="contentBool">Boolean content</param>
+        /// <param name="contentFloat">Float content</param>
+        /// <param name="contentInt">Integer content</param>
+        private Variable(string name, TypeElement type, bool contentKnown,
             bool contentBool, float contentFloat, int contentInt)
         {
-            Nom = nom;
+            Name = name;
             Type = type;
             ContentKnown = contentKnown;
             _contentBool = contentBool;
@@ -70,6 +132,11 @@ namespace analysePseudoCode
             _contentInt = contentInt;
         }
 
+        /// <summary>
+        /// Define content or type of a variable
+        /// </summary>
+        /// <param name="var">variable to attribute</param>
+        /// <returns>If updated or not changed</returns>
         internal bool SetVariable(Variable var)
         {
             if (var.Type.Type == TypeEnum.Unknown ||
@@ -101,11 +168,18 @@ namespace analysePseudoCode
             return rc;
         }
 
+        /// <summary>
+        /// Set the content of the variable unknown
+        /// </summary>
         internal void ContentUnknown()
         {
             ContentKnown = false;
         }
 
+        /// <summary>
+        /// Get the content of the variable if type is boolean
+        /// </summary>
+        /// <returns>Boolean content</returns>
         internal bool GetContentBool()
         {
             if (!ContentKnown || Type.Type != TypeEnum.Boolean)
@@ -117,6 +191,10 @@ namespace analysePseudoCode
             return _contentBool;
         }
 
+        /// <summary>
+        /// Get the content of the variable if type is integer
+        /// </summary>
+        /// <returns>Integer content</returns>
         internal int GetContentInt()
         {
             if (!ContentKnown || Type.Type != TypeEnum.Integer)
@@ -128,6 +206,10 @@ namespace analysePseudoCode
             return _contentInt;
         }
 
+        /// <summary>
+        /// Get the content of the variable if type is float
+        /// </summary>
+        /// <returns>Float content</returns>
         internal float GetContentReal()
         {
             if (!ContentKnown || Type.Type != TypeEnum.Real)
@@ -139,9 +221,13 @@ namespace analysePseudoCode
             return _contentFloat;
         }
 
+        /// <summary>
+        /// Basic ToString, simply format properly the thing
+        /// </summary>
+        /// <returns>Beautiful formating of the variable</returns>
         public override string ToString()
         {
-            return $"Variable {Nom} {{Type: {Type}; Contenu: {(Type.Type != TypeEnum.Unknown ? (ContentKnown ? (Type.Type == TypeEnum.Boolean ? _contentBool.ToString() : (Type.Type == TypeEnum.Integer ? _contentInt.ToString() : (Type.Type == TypeEnum.Real ? _contentFloat.ToString(CultureInfo.CurrentCulture) : "inconnu"))) : "inconnu") : "inconnu")}}}";
+            return $"Variable {Name} {{Type: {Type}; Contenu: {(Type.Type != TypeEnum.Unknown ? (ContentKnown ? (Type.Type == TypeEnum.Boolean ? _contentBool.ToString() : (Type.Type == TypeEnum.Integer ? _contentInt.ToString() : (Type.Type == TypeEnum.Real ? _contentFloat.ToString(CultureInfo.CurrentCulture) : "inconnu"))) : "inconnu") : "inconnu")}}}";
         }
     }
 }
