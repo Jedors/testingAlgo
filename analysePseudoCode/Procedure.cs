@@ -84,12 +84,18 @@ namespace analysePseudoCode
         /// <returns>Beautiful formating of the procedure</returns>
         public override string ToString()
         {
+            return $"Procedure {Name} {{{ListParameter()}}}";
+        }
+
+        public string ListParameter()
+        {
             string param = "";
-            foreach (Parameter parameter in ParameterList)
+            for (int i = 0; i < ParameterList.Count; i++)
             {
-                param += "  " + parameter + "\n";
+                param += "  " + ParameterList[i].ToString(i + 1) + "\n";
             }
-            return $"Procedure {Name} {{ListeParam: \n{param}}}";
+
+            return "ListeParam: \n" + param;
         }
     }
 }
