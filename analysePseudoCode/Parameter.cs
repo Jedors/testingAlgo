@@ -52,5 +52,10 @@ namespace analysePseudoCode
         {
             return $"{{Param: {{Type:{TypeParam}, Passage:{TypePass}}}}}";
         }
+
+        public string ToString(int i)
+        {
+            return $"{{Param{i}: {{Type:{TypeParam}, Passage:{TypePass}}}}}";
+        }
     }
 }

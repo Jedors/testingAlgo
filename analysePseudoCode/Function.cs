@@ -27,12 +27,8 @@
         /// <returns>Beautiful formating of the function</returns>
         public override string ToString()
         {
-            string param = "";
-            foreach (Parameter parameter in ParameterList)
-            {
-                param += "  " + parameter + "\n";
-            }
-            return $"Function {Name} {{Type: {FunctionType}, ListeParam: \n{param}}}";
+
+            return $"Function {Name} {{Type: {FunctionType}, {base.ListParameter()}}}";
         }
     }
 }
