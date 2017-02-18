@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace projTut
 {
-    class Instruction
+    internal class Instruction
     {
-        string Line;
+        private readonly string _line;
         Variable AssigneA;
 
         public Instruction(Instruction instruction)
@@ -19,7 +15,7 @@ namespace projTut
 
         public Instruction(string line)
         {
-            this.Line = line;
+            _line = line;
             AnalyseInstruction();
         }
 
@@ -30,28 +26,28 @@ namespace projTut
             Boolean proc = false;
             string outil="";
             List<string> listeOutil=new List<string>();
-            for (int i = 0; i < Line.Length; i++)
+            for (int i = 0; i < _line.Length; i++)
             {
-                if (Line[i] == '(')
+                if (_line[i] == '(')
                 {
                     inproc++;
-                    if(Char.IsLetter(Line[i-1]))
+                    if(Char.IsLetter(_line[i-1]))
                     {
                         proc = true;
                     }
                     
                 }
 
-                else if (Line[i] == ')')
+                else if (_line[i] == ')')
                 {
                     inproc--;
                 }
 
-                if ((Line[i] == '+'|| Line[i] == '-' || Line[i] == '*' || Line[i] =='/' || i+1==Line.Length) && (inproc == 0) && proc )
+                if ((_line[i] == '+'|| _line[i] == '-' || _line[i] == '*' || _line[i] =='/' || i+1==_line.Length) && (inproc == 0) && proc )
                 {
                     
-                    outil += Line[i];
-                    int debutpara = Line.IndexOf("(");
+                    outil += _line[i];
+                    int debutpara = _line.IndexOf("(");
 
                     if (debutpara != -1)
                     {
@@ -79,7 +75,7 @@ namespace projTut
 
                 else
                 {
-                    outil += Line[i];
+                    outil += _line[i];
                 }
             }
 

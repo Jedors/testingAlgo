@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace projTut
 {
-    class Parser
+    internal class Parser
     {
-        private string[] pseudocode; // Pseudo-code à analyser
-        string ppv = Properties.Resources.ppv; // Alias de ppv dans les ressources
+        private readonly string[] _pseudocode; // Pseudo-code à analyser
+        private readonly string _ppv = Properties.Resources.ppv; // Alias de ppv dans les ressources
 
         /// <summary>
         /// Affiche une erreur
@@ -19,7 +14,7 @@ namespace projTut
         /// <param name="message">Message d'erreur à afficher</param>
         private void PrintError(int ligneerreur, string message)
         {
-            Console.Error.WriteLine("Erreur à la ligne {0}: {1}", ligneerreur + 1, pseudocode[ligneerreur]);
+            Console.Error.WriteLine("Erreur à la ligne {0}: {1}", ligneerreur + 1, _pseudocode[ligneerreur]);
             Console.Error.WriteLine(message);
         }
 
@@ -29,7 +24,7 @@ namespace projTut
         /// <param name="pseudocode">Code à analyser</param>
         public Parser(string[] pseudocode)
         {
-            this.pseudocode = pseudocode;
+            _pseudocode = pseudocode;
         }
 
         // A factoriser plus tard + Documenter
@@ -37,30 +32,30 @@ namespace projTut
         /// Renvoie un booléen si le code est valide ou non
         /// </summary>
         /// <returns>True si valide</returns>
-        public bool isValid()
+        public bool IsValid()
         {
             //Vérification symbole assignation
-            foreach (string line in pseudocode)
+            foreach (string line in _pseudocode)
             {
-                int needleCount = (line.Length - line.Replace(ppv, "").Length) / ppv.Length;
+                int needleCount = (line.Length - line.Replace(_ppv, "").Length) / _ppv.Length;
                 if (needleCount == 1)
                 {
-                    if (line.IndexOf(ppv) == 0 || line.IndexOf(ppv) == line.Length - 2)
+                    if (line.IndexOf(_ppv) == 0 || line.IndexOf(_ppv) == line.Length - 2)
                     {
-                        PrintError(Array.IndexOf(pseudocode, line), "Symbole d'assignation en début ou fin de chaîne");
+                        PrintError(Array.IndexOf(_pseudocode, line), "Symbole d'assignation en début ou fin de chaîne");
                         return false;
                     }
                 }
                 else if (needleCount > 1)
                 {
-                    PrintError(Array.IndexOf(pseudocode, line), "Double symbole d'assignation");
+                    PrintError(Array.IndexOf(_pseudocode, line), "Double symbole d'assignation");
                     return false;
                 }
             }
 
             //Vérification parenthésage
-            int nb_par_open = 0; //nombre de parenthèses ouvertes
-            foreach (string line in pseudocode)
+            int nbParOpen = 0; //nombre de parenthèses ouvertes
+            foreach (string line in _pseudocode)
             {
                 for (int i = 0; i < line.Length; i++)
                 {
@@ -69,29 +64,29 @@ namespace projTut
                     {
                         if (i == line.Length - 1)
                         {
-                            PrintError(Array.IndexOf(pseudocode, line), "'(' en fin de ligne");
+                            PrintError(Array.IndexOf(_pseudocode, line), "'(' en fin de ligne");
                             return false;
                         }
-                        nb_par_open++;
+                        nbParOpen++;
                         char prec = line[i - 1], suiv = line[i + 1];
                         if (((prec < 'a')||(prec > 'z')) && (prec != '-') && (prec != '+') && (prec != '*') && (prec != '/') && (prec != '=')
                             && (prec != '>') && (prec != '<'))
                         {
-                            PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit avant un '('");
+                            PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit avant un '('");
                             return false;
                         }
                         if ((suiv < 'a') && (suiv > 'z') && (suiv < '0') && (suiv > '9') && (suiv != '-') && (suiv != '('))
                         {
-                            PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit après un '('");
+                            PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit après un '('");
                             return false;
                         }
                     }
                     if (c == ')')
                     {
-                        nb_par_open--;
-                        if (nb_par_open < 0)
+                        nbParOpen--;
+                        if (nbParOpen < 0)
                         {
-                            PrintError(Array.IndexOf(pseudocode, line), "Erreur de parenthesage");
+                            PrintError(Array.IndexOf(_pseudocode, line), "Erreur de parenthesage");
                             return false;
                         }
                         if (i != line.Length - 1)
@@ -102,36 +97,36 @@ namespace projTut
                             {
                                 if (!line.Substring(i+1).Contains("donne") || line.Substring(i+1).IndexOf("donne") != 0)
                                 {
-                                    PrintError(Array.IndexOf(pseudocode, line), "Caractère interdit après un ')'");
+                                    PrintError(Array.IndexOf(_pseudocode, line), "Caractère interdit après un ')'");
                                     return false;
                                 }
                             }
                         }
                     }
                 }
-                if (nb_par_open != 0)
+                if (nbParOpen != 0)
                 {
-                    PrintError(Array.IndexOf(pseudocode, line), "Erreur de parenthesage");
+                    PrintError(Array.IndexOf(_pseudocode, line), "Erreur de parenthesage");
                     return false;
                 }
             }
 
             //Vérif nom variable
-            foreach (string line in pseudocode)
+            foreach (string line in _pseudocode)
             {
-                if (line.Contains(ppv))
+                if (line.Contains(_ppv))
                 {
-                    string nom_var = line.Substring(0, line.IndexOf(ppv));
-                    if (nom_var[0] < 'a' || nom_var[0] > 'z')
+                    string nomVar = line.Substring(0, line.IndexOf(_ppv));
+                    if (nomVar[0] < 'a' || nomVar[0] > 'z')
                     {
-                        PrintError(Array.IndexOf(pseudocode, line), "Nom de variable invalide");
+                        PrintError(Array.IndexOf(_pseudocode, line), "Nom de variable invalide");
                         return false;
                     }
                 }
             }
 
             //Vérification paramètre non vide
-            foreach (string line in pseudocode)
+            foreach (string line in _pseudocode)
             {
                 for (int i = 0; i < line.Length; i++)
                 {
@@ -145,7 +140,7 @@ namespace projTut
                             {
                                 if ((j != i + 1) || (ch != '-'))
                                 {
-                                    PrintError(Array.IndexOf(pseudocode, line), "Paramètre invalide");
+                                    PrintError(Array.IndexOf(_pseudocode, line), "Paramètre invalide");
                                     return false;
                                 }
                             }

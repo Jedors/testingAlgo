@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace projTut
 {
-    class Procedure
+    internal class Procedure
     {
-        protected List<Parametre> listeParametre;
-        protected List<Instruction> listeInstruction;
-        protected string nom;
+        protected List<Parametre> ListeParametre;
+        protected List<Instruction> ListeInstruction;
+        protected string Nom;
 
         public Procedure(List<Parametre> listeParametre, List<Instruction> listeInstruction, string nom)
         {
-            this.listeParametre = new List<Parametre>(listeParametre);
-            this.listeInstruction = new List<Instruction>(listeInstruction);
-            this.nom = nom;
+            ListeParametre = new List<Parametre>(listeParametre);
+            ListeInstruction = new List<Instruction>(listeInstruction);
+            Nom = nom;
         }
 
 
@@ -26,9 +23,9 @@ namespace projTut
 
         }
 
-        public void insertInstruction(Instruction instruction)
+        public void InsertInstruction(Instruction instruction)
         {
-            listeInstruction.Add(new Instruction(instruction));
+            ListeInstruction.Add(new Instruction(instruction));
         }
 
         public Procedure(string line)
@@ -39,16 +36,15 @@ namespace projTut
         public override string ToString()
         {
             int i = 1;
-            string retour;
-            retour = "Nom de la procédure : " + this.nom;
+            string retour = "Nom de la procédure : " + Nom;
             
-            if(listeParametre != null)
+            if(ListeParametre != null)
             {
-                foreach (Parametre Para in listeParametre)
+                foreach (Parametre para in ListeParametre)
                 {
                     retour += "\nParametre n°" + i + " :";
                     i++;
-                    retour += Para.ToString();
+                    retour += para.ToString();
                     retour += "\n";
                 } 
             }
@@ -63,9 +59,9 @@ namespace projTut
             string para = line.Substring(debutpara + 1, length - 1);
             string para1 = "";
             int inproc = 0;
-            int i = 0;
+            int i;
             int j = 1;
-            listeParametre = new List<Parametre>();
+            ListeParametre = new List<Parametre>();
             for (i = 0; i < para.Length; i++)
             {
                 if (para[i] == '(')
@@ -80,7 +76,7 @@ namespace projTut
 
                 if ((para[i] == ',') && (inproc == 0))
                 {
-                    listeParametre.Add(determinePara(para1));
+                    ListeParametre.Add(DeterminePara(para1));
                     para1 = "";
                     j++;
                 }
@@ -91,39 +87,39 @@ namespace projTut
                 }
             }
 
-            listeParametre.Add(determinePara(para1));
-            Procedure proc= new Procedure(listeParametre, determineNom(line, debutpara));
+            ListeParametre.Add(DeterminePara(para1));
+            Procedure proc= new Procedure(ListeParametre, DetermineNom(line, debutpara));
             Console.WriteLine(proc);
         }
 
 
-        protected Parametre determinePara(string para)
+        protected Parametre DeterminePara(string para)
         {
-            Parametre parametre = null;
+            Parametre parametre;
             if (para.IndexOf(">(") != -1 || para.IndexOf("<(") != -1 || para.IndexOf("=(") != -1 || para.IndexOf(")>") != -1 || para.IndexOf(")<") != -1 || para.IndexOf(")=") != -1)
             {
-                parametre = new Parametre(new Type(Type.types.BOOLEAN), Parametre.PassagePar.VALEUR, para);
+                parametre = new Parametre(new TypeElement(TypeEnum.Boolean), Parametre.PassagePar.Valeur, para);
                 Instruction ins = new Instruction(para);
                 ins.AnalyseInstruction();
             }
 
             else if (para.IndexOf('(') != -1)
             {
-                parametre = new Parametre(Parametre.PassagePar.VALEUR, para);
+                parametre = new Parametre(new TypeElement(TypeEnum.Unknown), Parametre.PassagePar.Valeur, para);
                 Instruction ins = new Instruction(para);
                 ins.AnalyseInstruction();
             }
 
             else
             {
-                parametre = new Parametre(Parametre.PassagePar.UNKNOWN, para);
+                parametre = new Parametre(new TypeElement(TypeEnum.Unknown), Parametre.PassagePar.Unknown, para);
 
             }
 
             return parametre;
         }
 
-        protected string determineNom(string proc, int debutpara)
+        protected string DetermineNom(string proc, int debutpara)
         {
 
             return proc.Substring(0, debutpara);

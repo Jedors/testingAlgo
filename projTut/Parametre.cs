@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace projTut
+﻿namespace projTut
 {
-    class Parametre
+    internal class Parametre
     {
         /// <summary>
         /// Les différents types de passage de paramètre dans une fonction (adresse ou valeur)
         /// </summary>
         public enum PassagePar
         {
-            ADRESSE,
-            VALEUR,
-            UNKNOWN
+            Adresse,
+            Valeur,
+            Unknown
         }
 
-        private PassagePar passagePar;  // type de passage
-        private Type type;              // type du paramètre
-        private string contenu;         // contenu à faire analyser (peut-être résultat d'opération, ou fonc, var, ...)
+        private readonly PassagePar _passagePar;  // type de passage
+        private readonly TypeElement _type;              // type du paramètre
+        private readonly string _contenu;         // contenu à faire analyser (peut-être résultat d'opération, ou fonc, var, ...)
 
         /// <summary>
         /// Constructeur complet par défaut
@@ -28,12 +22,12 @@ namespace projTut
         /// <param name="type">Type du paramètre</param>
         /// <param name="passagePar">Type de passage</param>
         /// <param name="contenu">Contenu à faire analyser</param>
-        public Parametre(Type type, PassagePar passagePar,string contenu)
+        public Parametre(TypeElement type, PassagePar passagePar,string contenu)
         {
-
-            this.type = new Type(type); // Instanciation d'une copie -> Ne doit pas être modifiable de l'extérieur
-            this.passagePar = passagePar;
-            this.contenu = contenu;
+            
+            _type = new TypeElement(type); // Instanciation d'une copie -> Ne doit pas être modifiable de l'extérieur
+            _passagePar = passagePar;
+            _contenu = contenu;
 
         }
 
@@ -103,7 +97,7 @@ namespace projTut
         /// <returns>Contenu du paramètre formaté</returns>
         public override string ToString()
         {
-            return "\nContenu : " + contenu + "\ntype : " + type + "\nPassé par :" +  passagePar;
+            return "\nContenu : " + _contenu + "\ntype : " + _type + "\nPassé par :" +  _passagePar;
         }
     }
 }
