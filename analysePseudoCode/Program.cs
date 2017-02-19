@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
@@ -311,6 +312,14 @@ namespace analysePseudoCode
             Console.WriteLine();
             foreach (Instruction ins in InstructionList)
                 Console.WriteLine(ins.ToString());
+
+            List<string> listNamePart = new List<string>(args[0].Split('.'));
+            if (listNamePart.Count > 1)
+                listNamePart.RemoveAt(listNamePart.Count - 1);
+            string progName = String.Join(".", listNamePart); ;
+
+            Translator trans = new Translator(progName, InstructionList, VariableList, ProcedureList);
+            trans.Work();
 
             Console.WriteLine();
             Console.ReadKey();

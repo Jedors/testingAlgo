@@ -58,6 +58,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="StatutInsertion.cs" />
+    <Compile Include="Translator.cs" />
     <Compile Include="TypeElement.cs" />
     <Compile Include="TypeEnum.cs" />
     <Compile Include="TypePassage.cs" />

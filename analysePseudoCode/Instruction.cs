@@ -135,7 +135,7 @@ namespace analysePseudoCode
         /// </summary>
         /// <param name="chaine">line to analyse</param>
         /// <returns>true if assignation</returns>
-        private bool IsAssignation(string chaine)
+        internal bool IsAssignation(string chaine)
         {
             Regex assRegex = new Regex(@"^[a-z]+<_");
             return assRegex.IsMatch(chaine);
@@ -146,7 +146,7 @@ namespace analysePseudoCode
         /// </summary>
         /// <param name="chaine">line to analyse</param>
         /// <returns>true if print</returns>
-        private bool IsAffiche(string chaine)
+        internal bool IsAffiche(string chaine)
         {
             Regex affRegex = new Regex(@"^affiche\([a-z]+\)donne((\d+)|(\d+\.\d+)|(vrai)|(faux))$");
             return affRegex.IsMatch(chaine);
@@ -157,7 +157,7 @@ namespace analysePseudoCode
         /// </summary>
         /// <param name="chaine">line to analyse</param>
         /// <returns>true if procedure</returns>
-        private bool IsAppelProcedure(string chaine)
+        internal bool IsAppelProcedure(string chaine)
         {
             Regex procRegex = new Regex(@"^[^(affiche)][a-z]+\(.*\)$");
             return procRegex.IsMatch(chaine);
@@ -168,9 +168,10 @@ namespace analysePseudoCode
         /// </summary>
         /// <param name="function">line to analyse</param>
         /// <returns>true if function</returns>
-        private bool IsFunction(string function)
+        internal bool IsFunction(string function)
         {
             Regex isFunctionRegex = new Regex(@"^[a-z]+\(.+\)$");
+            //TODO REDO
             return isFunctionRegex.IsMatch(function);
         }
 
@@ -452,6 +453,24 @@ namespace analysePseudoCode
         public override string ToString()
         {
             return Ligne;
+        }
+
+        internal string ToPascal()
+        {
+            if (IsAssignation(Ligne))
+                return Ligne.Replace(Properties.Resources.ppv, ":=") + ";";
+            if (IsAppelProcedure(Ligne))
+                return Ligne + ";";
+            if (IsAffiche(Ligne))
+            {
+                string affKeyWord = "affiche(", donneKeyWord = ")donne";
+                string varName = Ligne.Substring(affKeyWord.Length,
+                    Ligne.IndexOf(donneKeyWord, StringComparison.CurrentCulture) - affKeyWord.Length);
+                string rc = "WriteLn(";
+                rc += varName + ");";
+                return rc;
+            }
+            throw new NotImplementedException();
         }
     }
 }
