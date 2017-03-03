@@ -293,6 +293,7 @@ namespace analysePseudoCode
                 Console.Error.WriteLine("One and only one argument required");
                 Console.Error.WriteLine("Check {0} --help", appName);
                 Console.Error.WriteLine("(Not implemented yet.)");
+                Console.ReadKey();
                 return -1;
             }
 
