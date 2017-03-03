@@ -70,7 +70,14 @@ namespace analysePseudoCode
         public Variable(string name, TypeElement type, bool contentBool) : this(name, type, true, contentBool, 0.0f, 0)
         {
             if (type.Type == TypeEnum.Unknown)
-                type.Type = TypeEnum.Boolean;
+                try
+                {
+                    type.Type = TypeEnum.Boolean;
+                }
+                catch (ArgumentException e)
+                {
+                    Program.PrintError(e.Message);
+                }
             if (type.Type != TypeEnum.Boolean)
             {
                 Console.Error.WriteLine("Error: Variable type different from content type.");
@@ -87,7 +94,14 @@ namespace analysePseudoCode
         public Variable(string name, TypeElement type, float contentFloat) : this(name, type, true, false, contentFloat, 0)
         {
             if (type.Type == TypeEnum.Unknown)
-                type.Type = TypeEnum.Real;
+                try
+                {
+                    type.Type = TypeEnum.Real;
+                }
+                catch (ArgumentException e)
+                {
+                    Program.PrintError(e.Message);
+                }
             if (type.Type != TypeEnum.Real)
             {
                 Console.Error.WriteLine("Error: Variable type different from content type.");
@@ -104,7 +118,14 @@ namespace analysePseudoCode
         public Variable(string name, TypeElement type, int contentInt) : this(name, type, true, false, 0.0f, contentInt)
         {
             if (type.Type == TypeEnum.Unknown)
-                type.Type = TypeEnum.Integer;
+                try
+                {
+                    type.Type = TypeEnum.Integer;
+                }
+                catch (ArgumentException e)
+                {
+                    Program.PrintError(e.Message);
+                }
             if (type.Type != TypeEnum.Integer)
             {
                 Console.Error.WriteLine("Error: Variable type different from content type.");
@@ -148,7 +169,14 @@ namespace analysePseudoCode
             if (Type.Type == TypeEnum.Unknown)
             {
                 rc = true;
-                Type.Type = var.Type.Type;
+                try
+                {
+                    Type.Type = var.Type.Type;
+                }
+                catch (ArgumentException e)
+                {
+                    Program.PrintError(e.Message);
+                }
             }
 
             if (Type.Type == TypeEnum.Boolean && !var._contentBool.Equals(_contentBool))

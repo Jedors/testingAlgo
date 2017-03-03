@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
@@ -63,14 +62,28 @@ namespace analysePseudoCode
                         if (procedure.ParameterList[i].TypeParam.Type == TypeEnum.Unknown &&
                             proc.ParameterList[i].TypeParam.Type != TypeEnum.Unknown) // if type now known, update it
                         {
-                            procedure.ParameterList[i].TypeParam.Type = proc.ParameterList[i].TypeParam.Type;
+                            try
+                            {
+                                procedure.ParameterList[i].TypeParam.Type = proc.ParameterList[i].TypeParam.Type;
+                            }
+                            catch (ArgumentException e)
+                            {
+                                PrintError(e.Message);
+                            }
                             isUpdated = true;
                         }
 
                         if (procedure.ParameterList[i].TypePass == TypePassage.Unknown &&
                             proc.ParameterList[i].TypePass != TypePassage.Unknown) // if passage know known, update it
                         {
-                            procedure.ParameterList[i].TypePass = proc.ParameterList[i].TypePass;
+                            try
+                            {
+                                procedure.ParameterList[i].TypePass = proc.ParameterList[i].TypePass;
+                            }
+                            catch (ArgumentException e)
+                            {
+                                PrintError(e.Message);
+                            }
                             isUpdated = true;
                         }
                     }
@@ -123,7 +136,14 @@ namespace analysePseudoCode
                         }
                         if (function.FunctionType.Type != TypeEnum.Unknown) // Update the type if you know it
                         {
-                            function.FunctionType.Type = func.FunctionType.Type;
+                            try
+                            {
+                                function.FunctionType.Type = func.FunctionType.Type;
+                            }
+                            catch (ArgumentException e)
+                            {
+                                PrintError(e.Message);
+                            }
                             isUpdated = true;
                         }
 
@@ -132,14 +152,28 @@ namespace analysePseudoCode
                             if (function.ParameterList[i].TypeParam.Type == TypeEnum.Unknown &&
                                 func.ParameterList[i].TypeParam.Type != TypeEnum.Unknown) // if type now known, update it
                             {
-                                function.ParameterList[i].TypeParam.Type = func.ParameterList[i].TypeParam.Type;
+                                try
+                                {
+                                    function.ParameterList[i].TypeParam.Type = func.ParameterList[i].TypeParam.Type;
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    PrintError(e.Message);
+                                }
                                 isUpdated = true;
                             }
 
                             if (function.ParameterList[i].TypePass == TypePassage.Unknown &&
                                 func.ParameterList[i].TypePass != TypePassage.Unknown) // if passage now known, update it
                             {
-                                function.ParameterList[i].TypePass = func.ParameterList[i].TypePass;
+                                try
+                                {
+                                    function.ParameterList[i].TypePass = func.ParameterList[i].TypePass;
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    PrintError(e.Message);
+                                }
                                 isUpdated = true;
                             }
                         }
@@ -298,9 +332,17 @@ namespace analysePseudoCode
                 return -1;
             }
 
+            int id = 1;
             foreach (string line in pseudocode) // Line by line analyse
             {
-                InstructionList.Add(new Instruction(line));
+                try
+                {
+                    InstructionList.Add(new Instruction(line, id++));
+                }
+                catch (Exception e)
+                {
+                    PrintError(e.Message);
+                }
             }
 
             // Print the result
@@ -316,7 +358,7 @@ namespace analysePseudoCode
             List<string> listNamePart = new List<string>(args[0].Split('.'));
             if (listNamePart.Count > 1)
                 listNamePart.RemoveAt(listNamePart.Count - 1);
-            string progName = String.Join(".", listNamePart); ;
+            string progName = String.Join(".", listNamePart);
 
             Translator trans = new Translator(progName, InstructionList, VariableList, ProcedureList);
             trans.Work();
@@ -325,5 +367,17 @@ namespace analysePseudoCode
             Console.ReadKey();
             return 0;
         }
+
+        /// <summary>
+        /// On error, print the error and leave the application
+        /// </summary>
+        /// <param name="errorMessage">Error message to print</param>
+        internal static void PrintError(string errorMessage)
+        {
+            Console.Error.WriteLine($"[Error]{errorMessage}");
+            Console.ReadKey();
+            Environment.Exit(-1);
+        }
     }
 }
+

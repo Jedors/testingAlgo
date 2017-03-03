@@ -21,6 +21,11 @@ namespace analysePseudoCode
         internal string Ligne { get; }
 
         /// <summary>
+        /// Id of the instruction line
+        /// </summary>
+        private int LineId { get; }
+
+        /// <summary>
         /// If the line is an assignation line,
         /// this is the assignate variable
         /// </summary>
@@ -37,12 +42,20 @@ namespace analysePseudoCode
         /// an assignation, a print of variable, or a procedure call
         /// </summary>
         /// <param name="line">Line of code to analyse</param>
-        public Instruction(string line)
+        /// <param name="id">Id of the instruction line</param>
+        public Instruction(string line, int id)
         {
             Ligne = line;
-
+            LineId = id;
             if (IsAssignation(line)){
-                AnalyseAssignation(line);
+                try
+                {
+                    AnalyseAssignation(line);
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
                 return;
             }
             if (IsAffiche(line)) {
@@ -106,20 +119,48 @@ namespace analysePseudoCode
             if (listeElement.Count == 1) // If lowerer level scope, find his type
             {
                 if (IsVariable(scope))
-                    type = Program.GetVariable(scope).Type;
+                    try
+                    {
+                        type = Program.GetVariable(scope).Type;
+                    }
+                    catch (NotImplementedException e)
+                    {
+                        CatcherError(e.Message);
+                    }
                 if (IsConstant(scope))
-                    type = AnalyseConstant(scope).Type;
+                    try
+                    {
+                        type = AnalyseConstant(scope).Type;
+                    }
+                    catch (Exception e)
+                    {
+                        CatcherError(e.Message);
+                    }
                 if (IsFunction(scope))
                     type = AnalyseFunction(scope, false).FunctionType;
                 return type;
             }
 
             type = GetScopeType(listeElement[0]);
-            GetScopeType(listeElement[0]).Type = type.Type;
+            try
+            {
+                GetScopeType(listeElement[0]).Type = type.Type;
+            }
+            catch (ArgumentException e)
+            {
+                CatcherError(e.Message);
+            }
             for (int i = 1; i < listeElement.Count; i++)
             { // Make all the types to be the same
-                type.Type = GetScopeType(listeElement[i]).Type;
-                GetScopeType(listeElement[i]).Type = type.Type;
+                try
+                {
+                    type.Type = GetScopeType(listeElement[i]).Type;
+                    GetScopeType(listeElement[i]).Type = type.Type;
+                }
+                catch (ArgumentException e)
+                {
+                    CatcherError(e.Message);
+                }
             }
 
             if (listeElement.Count == 2 && (scope.Contains(">") || scope.Contains("<") || scope.Contains("=")))
@@ -127,6 +168,17 @@ namespace analysePseudoCode
                 type = new TypeElement(TypeEnum.Boolean);
             }
             return type;
+        }
+
+        /// <summary>
+        /// On error, print the error and leave the application
+        /// </summary>
+        /// <param name="errorMessage">Error message to print</param>
+        private void CatcherError(string errorMessage)
+        {
+            Console.Error.WriteLine($"[Error] At line {LineId}: {errorMessage}\n{Ligne}");
+            Console.ReadKey();
+            Environment.Exit(-1);
         }
 
         #region IsSomething
@@ -171,7 +223,7 @@ namespace analysePseudoCode
         internal bool IsFunction(string function)
         {
             Regex isFunctionRegex = new Regex(@"^[a-z]+\(.+\)$");
-            //TODO REDO
+            
             return isFunctionRegex.IsMatch(function);
         }
 
@@ -218,13 +270,20 @@ namespace analysePseudoCode
                 return false; // If multiple boolean operator
             List<string> listeElement = GetScopeList(scope);
 
-            if (listeElement.Count == 1)
-                if ((IsVariable(listeElement[0]) && /* Not good, not null */
-                    Program.GetVariable(listeElement[0]) != null) ||
-                    IsConstant(listeElement[0]) || IsFunction(listeElement[0]))
-                    return true; // If element is correct
-                else
-                    return false;
+            try
+            {
+                if (listeElement.Count == 1)
+                    if ((IsVariable(listeElement[0]) && /* Not good, not null */
+                         Program.GetVariable(listeElement[0]) != null) ||
+                        IsConstant(listeElement[0]) || IsFunction(listeElement[0]))
+                        return true; // If element is correct
+                    else
+                        return false;
+            }
+            catch (Exception e)
+            {
+                CatcherError(e.Message);
+            }
             foreach (string elem in listeElement)
                 if (!IsScopeValid(elem)) // Analyse all lower level element
                     return false;
@@ -254,25 +313,76 @@ namespace analysePseudoCode
 
             if (AssigneA == null) // If not exist, create it
             {
-                Variable rc = AnalyseCalcul(calcul, false);
+                Variable rc;
+                try
+                {
+                    rc = AnalyseCalcul(calcul, false);
+                }
+                catch (ArithmeticException e)
+                {
+                    CatcherError(e.Message);
+                    return;
+                }
                 if (rc.ContentKnown) // If assignate content is known...
                 {
                     if (rc.Type.Type == TypeEnum.Boolean)
-                        AssigneA = new Variable(varName, rc.Type, rc.GetContentBool());
+                        try
+                        {
+                            AssigneA = new Variable(varName, rc.Type, rc.GetContentBool());
+                        }
+                        catch (Exception e)
+                        {
+                            CatcherError(e.Message);
+                        }
                     else if (rc.Type.Type == TypeEnum.Integer)
-                        AssigneA = new Variable(varName, rc.Type, rc.GetContentInt());
+                        try
+                        {
+                            AssigneA = new Variable(varName, rc.Type, rc.GetContentInt());
+                        }
+                        catch (Exception e)
+                        {
+                            CatcherError(e.Message);
+                        }
                     else if (rc.Type.Type == TypeEnum.Real)
-                        AssigneA = new Variable(varName, rc.Type, rc.GetContentReal());
+                        try
+                        {
+                            AssigneA = new Variable(varName, rc.Type, rc.GetContentReal());
+                        }
+                        catch (Exception e)
+                        {
+                            CatcherError(e.Message);
+                        }
                 }
                 else
-                    AssigneA = new Variable(varName, rc.Type);
-                if (Program.InsertVariable(AssigneA) == StatutInsertion.Error)
+                    try
+                    {
+                        AssigneA = new Variable(varName, rc.Type);
+                    }
+                    catch (Exception e)
+                    {
+                        CatcherError(e.Message);
+                    }
+                try
                 {
-                    throw new Exception("An error appeared approxymately here");
+                    if (Program.InsertVariable(AssigneA) == StatutInsertion.Error)
+                    {
+                        throw new Exception("An error appeared approxymately here");
+                    }
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
                 }
             }
             else
-                AssigneA.SetVariable(AnalyseCalcul(calcul, true)); // If variable exist, just an update
+                try
+                {
+                    AssigneA.SetVariable(AnalyseCalcul(calcul, true)); // If variable exist, just an update
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
         }
 
         /// <summary>
@@ -300,7 +410,14 @@ namespace analysePseudoCode
             }
 
             //TODO Affichage ?
-            var.SetVariable(AnalyseConstant(content)); // Update of the content
+            try
+            {
+                var.SetVariable(AnalyseConstant(content));
+            } // Update of the content
+            catch (Exception e)
+            {
+                CatcherError(e.Message);
+            }
         }
         
         /// <summary>
@@ -325,9 +442,23 @@ namespace analysePseudoCode
             paramList.Add(affiche.Substring(debutParam, affiche.Length - debutParam - 1));
             int j = 0;
             Parameter[] listeParameters = new Parameter[paramList.Count];
-            foreach (string param in paramList) listeParameters[j++] = AnalyseParametre(param);
+            try
+            {
+                foreach (string param in paramList) listeParameters[j++] = AnalyseParametre(param);
+            }
+            catch (ArgumentNullException e)
+            {
+                CatcherError(e.Message);
+            }
 
-            Program.InsertProcedure(Proc = new Procedure(procName, listeParameters));
+            try
+            {
+                Program.InsertProcedure(Proc = new Procedure(procName, listeParameters));
+            }
+            catch (ArgumentException e)
+            {
+                CatcherError(e.Message);
+            }
         }
         #endregion
 
@@ -346,11 +477,27 @@ namespace analysePseudoCode
             if (!IsVariable(param))
             { // Only a single variable can be by adress
                 pass = TypePassage.Value;
-                type = IsConstant(param) ? AnalyseConstant(param).Type : AnalyseCalcul(param, false).Type;
+                try
+                {
+                    type = IsConstant(param) ? AnalyseConstant(param).Type : AnalyseCalcul(param, false).Type;
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                    return null;
+                }
             }
             else
             {
-                type = Program.GetVariable(param).Type;
+                try
+                {
+                    type = Program.GetVariable(param).Type;
+                }
+                catch (NotImplementedException e)
+                {
+                    CatcherError(e.Message);
+                    return null;
+                }
             }
 
             return new Parameter(type, pass);
@@ -383,9 +530,24 @@ namespace analysePseudoCode
             Parameter[] listeParameters = new Parameter[paramList.Count];
             foreach (string paramContent in paramList) listeParameters[j++] = AnalyseParametre(paramContent);
 
-            Program.InsertFunction(new Function(funcName, type, listeParameters));
+            try
+            {
+                Program.InsertFunction(new Function(funcName, type, listeParameters));
+            }
+            catch (ArgumentException e)
+            {
+                CatcherError(e.Message);
+            }
 
-            return Program.GetFunction(funcName);
+            try
+            {
+                return Program.GetFunction(funcName);
+            }
+            catch (NotImplementedException e)
+            {
+                CatcherError(e.Message);
+                return null;
+            }
         }
 
         /// <summary>
@@ -399,14 +561,35 @@ namespace analysePseudoCode
             Regex isWithFunctionRegex = new Regex(@"[a-z]+\(.+\)");
             // If lowerer level
             if (IsVariable(calcul))
-                return Program.GetVariable(calcul);
+                try
+                {
+                    return Program.GetVariable(calcul);
+                }
+                catch (NotImplementedException e)
+                {
+                    CatcherError(e.Message);
+                }
             if (IsConstant(calcul))
-                return AnalyseConstant(calcul);
+                try
+                {
+                    return AnalyseConstant(calcul);
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
             if (IsFunction(calcul))
-                return new Variable("function", AnalyseFunction(calcul, fromAssignation).FunctionType);
+                try
+                {
+                    return new Variable("function", AnalyseFunction(calcul, fromAssignation).FunctionType);
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
 
             if (!IsScopeValid(calcul))
-                throw new ArithmeticException();
+                throw new ArithmeticException("If function addition, remove it, not handled");
 
             TypeElement type = GetScopeType(calcul);
 
@@ -434,13 +617,34 @@ namespace analysePseudoCode
             }
 
             if (constant == "vrai" || constant == "faux")
-                return new Variable("constant", constant == "vrai");
+                try
+                {
+                    return new Variable("constant", constant == "vrai");
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
 
             if (new Regex(@"^\d+$").IsMatch(constant))
-                return new Variable("constant", Int32.Parse(constant));
+                try
+                {
+                    return new Variable("constant", Int32.Parse(constant));
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
 
             if (new Regex(@"^\d+\.\d+$").IsMatch(constant))
-                return new Variable("constant", Single.Parse(constant));
+                try
+                {
+                    return new Variable("constant", Single.Parse(constant));
+                }
+                catch (Exception e)
+                {
+                    CatcherError(e.Message);
+                }
 
             throw new Exception("Not understandable error");
         }
